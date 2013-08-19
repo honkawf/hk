@@ -1,4 +1,4 @@
-package com.sqlite;
+package com.buyertest;
 
 
 import com.buyertest.R;

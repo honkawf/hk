@@ -15,6 +15,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentRight="true"
     android:layout_alignTop="@+id/type"
+    android:textColor="@color/gray"
     android:text="TextView04"
     android:textSize="20dip" />
 
@@ -24,6 +25,7 @@
     android:layout_height="25dp"
     android:layout_alignLeft="@+id/t3"
     android:layout_alignParentTop="true"
+    android:textColor="@color/gray"
     android:text="TextView02" />
 
 <TextView
@@ -32,6 +34,7 @@
     android:layout_height="50dp"
     android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true"
+    android:textColor="@color/gray"
     android:text="TextView01"
     android:textSize="20dip" />
 
@@ -42,6 +45,7 @@
     android:layout_below="@+id/t2"
     android:layout_marginLeft="23dp"
     android:layout_toRightOf="@+id/t1"
+    android:textColor="@color/gray"
     android:text="TextView03" />
 
 </RelativeLayout>

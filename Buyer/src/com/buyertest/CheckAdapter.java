@@ -1,4 +1,4 @@
-package com.sqlite;
+package com.buyertest;
 
 import java.util.ArrayList;
 import java.util.HashMap;

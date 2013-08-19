@@ -16,6 +16,7 @@
     android:layout_alignParentRight="true"
     android:layout_alignTop="@+id/type"
     android:text="TextView04"
+    android:textColor="@color/gray"
     android:textSize="20dip" />
 
 <TextView
@@ -24,6 +25,7 @@
     android:layout_height="25dp"
     android:layout_alignLeft="@+id/t3"
     android:layout_alignParentTop="true"
+    android:textColor="@color/gray"
     android:text="TextView02" />
 
 <TextView
@@ -33,6 +35,7 @@
     android:layout_alignParentLeft="true"
     android:layout_alignParentTop="true"
     android:text="TextView01"
+    android:textColor="@color/gray"
     android:textSize="20dip" />
 
 <TextView
@@ -41,6 +44,7 @@
     android:layout_height="25dp"
     android:layout_below="@+id/t2"
     android:layout_marginLeft="23dp"
+    android:textColor="@color/gray"
     android:layout_toRightOf="@+id/t1"
     android:text="TextView03" />
 

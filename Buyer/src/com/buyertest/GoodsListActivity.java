@@ -51,6 +51,7 @@ public class GoodsListActivity extends Activity{
     private String scanResult;
 	private ArrayList<String> barcodeset=new ArrayList<String>();
 	private Handler handler = new Handler() {
+		//此处有bug，在界面结束后还有可能dismiss()
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {

@@ -10,9 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import com.sqlite.Check;
-import com.sqlite.CheckAdapter;
 import com.sqlite.Checkdh;
-import com.sqlite.CornerListView;
 
 import android.app.Activity;
 import android.content.Intent;

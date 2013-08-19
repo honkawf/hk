@@ -48,7 +48,8 @@ public class StoreInfoActivity extends Activity{
             	break;
             case 3:
             	pd.dismiss();
-            	Intent intent = new Intent(StoreInfoActivity.this,GoodsListActivity.class);
+            	Intent intent = new Intent(StoreInfoActivity.this,ConfirmPriceActicity.class);
+            	intent.putExtra("price", (String)msg.obj);
     			startActivity(intent);   
        		 	StoreInfoActivity.this.finish();
             }
@@ -147,7 +148,7 @@ public class StoreInfoActivity extends Activity{
                      		 BluetoothOperation.isConnected=0;
                         	 Log.d("point","4");
                      		 msg=handler.obtainMessage();
-                     		 msg.what=0;
+                     		 msg.what=3;
                      		 msg.sendToTarget();
         				 }
         			 }.start();
