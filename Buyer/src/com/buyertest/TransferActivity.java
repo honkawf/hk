@@ -10,10 +10,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import cn.edu.seu.datatransportation.BluetoothDataTransportation;
+import cn.edu.seu.datatransportation.ClsUtils;
+import cn.edu.seu.datatransportation.BluetoothDataTransportation.ClientThread;
+
 import com.XML.XML;
-import com.bluetooth.BluetoothOperation;
-import com.bluetooth.BluetoothOperation.ClientThread;
-import com.bluetooth.ClsUtils;
 import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;
@@ -92,7 +93,7 @@ public class TransferActivity extends Activity {
                 String[] values = str.split(";");
                 name=values[0];
                	mac= values[1];
-                BluetoothOperation.pair(mac);
+                BluetoothDataTransportation.pair(mac);
                 Intent intent= new Intent(TransferActivity.this,ReceiverActivity.class);
                 intent.putExtra("name",name);
                 intent.putExtra("mac",mac);

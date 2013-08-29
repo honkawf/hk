@@ -1,4 +1,4 @@
-package com.bluetooth;
+package cn.edu.seu.datatransportation;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;

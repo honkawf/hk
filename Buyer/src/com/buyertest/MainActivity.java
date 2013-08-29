@@ -10,12 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import cn.edu.seu.datatransportation.BluetoothDataTransportation;
+import cn.edu.seu.datatransportation.ClsUtils;
+import cn.edu.seu.datatransportation.BluetoothDataTransportation.ServerThread;
+
 import com.XML.PersonInfo;
 import com.XML.Transfer;
 import com.XML.XML;
-import com.bluetooth.BluetoothOperation;
-import com.bluetooth.ClsUtils;
-import com.bluetooth.BluetoothOperation.ServerThread;
 import com.sqlite.Checkdh;
 import com.zxing.activity.CaptureActivity;
 
@@ -115,12 +116,12 @@ public class MainActivity extends Activity {
                  {
         			 try
         			 {
-        				 BluetoothOperation ob=new BluetoothOperation();
-        		         BluetoothOperation.ServerThread st=ob.new ServerThread();
+        				 BluetoothDataTransportation ob=new BluetoothDataTransportation();
+        		         BluetoothDataTransportation.ServerThread st=ob.new ServerThread();
         		         st.start();
         		         Log.d("point","1");
-        				 while(BluetoothOperation.receiveConnection==0);
-        				 BluetoothOperation.receiveConnection=0;
+        				 while(BluetoothDataTransportation.receiveConnection==0);
+        				 BluetoothDataTransportation.receiveConnection=0;
         				 /*被连接上自动发送自己信息，用于个体户付款*/
                  		/* XML info=new XML();
                  		 info.addPersonData(person.getUserName(), "","", "", person.getBluetoothMac(), "", "","", "");;
@@ -128,15 +129,15 @@ public class MainActivity extends Activity {
                  		 Log.d("发送",xml);
                  		 BluetoothOperation.send(xml);*/
         				 XML info=new XML();
-                         byte[] receive=BluetoothOperation.receive();
-                         BluetoothOperation.receive=null;
+                         byte[] receive=BluetoothDataTransportation.receive();
+                         BluetoothDataTransportation.receive=null;
                  		 transfer=info.parseTransferXML(new ByteArrayInputStream(receive));
                  		 String xml=info.productSentenceXML("转账成功");
-                 		 BluetoothOperation.send(xml);
+                 		 BluetoothDataTransportation.send(xml);
                  		 Message msg=handler.obtainMessage();
                  		 msg.what=1;
                  		 msg.sendToTarget();
-                 		 BluetoothOperation.mserverSocket.close();
+                 		 BluetoothDataTransportation.mserverSocket.close();
                  		 try
                  		 {
                  			 Checkdh cdh = new Checkdh(MainActivity.this, "recorddb" , null, 1);
@@ -146,37 +147,7 @@ public class MainActivity extends Activity {
                  		 {
                  			 Log.e("数据库操作","失败");
                  		 }
-                 		/* try
-                 		 {
-                 			 XML cash=new XML();
-                 			 MainActivity.person.setCardNum("1234567890123456789");
-                 			 transfer.setReceiverDevice( MainActivity.person.getBluetoothMac());
-                 			 transfer.setReceiverName(MainActivity.person.getUserName());
-                 			 transfer.setReceiverCardNumber(MainActivity.person.getCardNum());
-                 			 cash.setTransfer(transfer);
-                 			 String cashxml=cash.produceTransferXML("transfer");
-                 			 Socket clientsocket=new Socket("honka.xicp.net",30145);
-                    		 InputStream in=clientsocket.getInputStream();
-                    		 OutputStream out=clientsocket.getOutputStream();
-                    		 out.write(BluetoothOperation.plusHead(cashxml.getBytes().length));
-                    		 Log.i("发送到银行长度",String.valueOf(cashxml.getBytes().length));
-                    		 out.write(cashxml.getBytes());
-                    		 Log.i("发送到银行",cashxml);
-                    		 byte [] buffer=new byte[16];
-                    		 in.read(buffer);
-                    		 int length=BluetoothOperation.readHead(buffer);
-                    		 byte [] result=new byte [length];
-                    		 in.read(result);
-                    		 Log.d("收到",new String(result));
-                    		 String parsedresult=cash.parseSentenceXML(new ByteArrayInputStream(result));
-                    		 clientsocket.close();
-                 		 }
-                 		 catch(Exception e)
-                 		 {
-                 			 msg=handler.obtainMessage();
-            				 msg.what=2;
-            				 msg.sendToTarget();
-                 		 }*/
+                 		
 
         			 }
         			 catch(Exception e)
@@ -212,7 +183,7 @@ public class MainActivity extends Activity {
  			mac=scanResult.split(";")[1];
  			try {
  				
- 				BluetoothOperation.pair(mac);
+ 				BluetoothDataTransportation.pair(mac);
  				Toast.makeText(MainActivity.this, scanResult, Toast.LENGTH_LONG).show();
  				Intent store=new Intent(MainActivity.this,StoreInfoActivity.class);
  				store.putExtra("scanResult", scanResult);

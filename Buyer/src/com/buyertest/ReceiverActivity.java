@@ -1,8 +1,9 @@
 package com.buyertest;
 
+import cn.edu.seu.datatransportation.BluetoothDataTransportation;
+import cn.edu.seu.datatransportation.BluetoothDataTransportation.ClientThread;
+
 import com.XML.XML;
-import com.bluetooth.BluetoothOperation;
-import com.bluetooth.BluetoothOperation.ClientThread;
 import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;
@@ -68,16 +69,16 @@ public class ReceiverActivity extends Activity{
  						msg.what=1;
  						msg.obj="正在连接";
  						msg.sendToTarget();
- 						while(BluetoothOperation.isConnected==0);
-                  		BluetoothOperation.isConnected=0;
+ 						while(BluetoothDataTransportation.isConnected==0);
+                  		BluetoothDataTransportation.isConnected=0;
  						msg=handler.obtainMessage();
  						msg.what=0;
  						msg.sendToTarget();
  					}
  				}.start();
-                BluetoothOperation.mac=mac;
-            	BluetoothOperation bo=new BluetoothOperation();
-         		BluetoothOperation.ClientThread ct=bo.new ClientThread();
+                BluetoothDataTransportation.mac=mac;
+            	BluetoothDataTransportation bo=new BluetoothDataTransportation();
+         		BluetoothDataTransportation.ClientThread ct=bo.new ClientThread();
          		ct.start();
          		
          		Log.d("point","1");

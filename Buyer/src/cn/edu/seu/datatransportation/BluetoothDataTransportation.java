@@ -1,4 +1,4 @@
-package com.bluetooth;
+package cn.edu.seu.datatransportation;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +11,7 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 
-public class BluetoothOperation {
+public class BluetoothDataTransportation {
 
 	public static BluetoothSocket socket;
 	public static int isConnected=0;
@@ -213,23 +213,23 @@ public class BluetoothOperation {
 	{
 		if(xml.equals(""))
 			return false;
-		BluetoothOperation bo=new BluetoothOperation();
+		BluetoothDataTransportation bo=new BluetoothDataTransportation();
 		if(socket==null)
 		{
-			BluetoothOperation.ClientThread ct=bo.new ClientThread();
+			BluetoothDataTransportation.ClientThread ct=bo.new ClientThread();
 			ct.start();
 			while(isConnected==0);
 			isConnected=0;
 		}
-		BluetoothOperation.msg=xml;
-		BluetoothOperation.SendThread st=bo.new SendThread();
+		BluetoothDataTransportation.msg=xml;
+		BluetoothDataTransportation.SendThread st=bo.new SendThread();
 		st.start();
 		return true;
 	}
 	public  static byte[] receive()
 	{
-		BluetoothOperation bo=new BluetoothOperation();
-		BluetoothOperation.ReadThread rt=bo.new ReadThread();
+		BluetoothDataTransportation bo=new BluetoothDataTransportation();
+		BluetoothDataTransportation.ReadThread rt=bo.new ReadThread();
 		rt.start();
 		while(receive==null);
 		return receive;

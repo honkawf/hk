@@ -5,10 +5,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import cn.edu.seu.datatransportation.BluetoothDataTransportation;
+
 import com.RSA.RSA;
 import com.XML.PersonInfo;
 import com.XML.XML;
-import com.bluetooth.BluetoothOperation;
 
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -61,7 +62,7 @@ public class TransferPriceActivity extends Activity {
 							startActivity(intent);
 							GoodsListActivity.flag=1;
 							try {
-								BluetoothOperation.socket.close();
+								BluetoothDataTransportation.socket.close();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -103,7 +104,7 @@ public class TransferPriceActivity extends Activity {
 						msg.sendToTarget();
 						Date d=new Date();
 						long start=d.getTime()/1000;
-						while(BluetoothOperation.receive==null)
+						while(BluetoothDataTransportation.receive==null)
 						{
 							long end=d.getTime()/1000;
 							if(end-start>120)
@@ -128,8 +129,8 @@ public class TransferPriceActivity extends Activity {
 						String cardnumber=MainActivity.person.getCardNum();
 						String username=MainActivity.person.getUserName();
 						String transfertime=String.valueOf(dt.getTime()/1000);
-						String payerdevice=BluetoothOperation.getLocalMac().replaceAll(":","");
-						String receiverdevice=BluetoothOperation.mac.replaceAll(":","");
+						String payerdevice=BluetoothDataTransportation.getLocalMac().replaceAll(":","");
+						String receiverdevice=BluetoothDataTransportation.mac.replaceAll(":","");
 						int totalpricefill=(int)(Double.valueOf(totalprice)*100);
 						String pricefill=String.format("%08d",totalpricefill);
 						String payerdevicesub=payerdevice.substring(payerdevice.length()-4,payerdevice.length());
@@ -141,10 +142,10 @@ public class TransferPriceActivity extends Activity {
 						String cipher=rsa.setRSA(words);
 						transfer.setTransfer(payerdevice, "", username, "", transfertime, totalprice, cipher, cardnumber, "");
 						String xml=transfer.produceTransferXML("transfer");
-						BluetoothOperation.send(xml);
+						BluetoothDataTransportation.send(xml);
 						Log.d("发送",xml);
-						byte[] receive=BluetoothOperation.receive();
-						BluetoothOperation.receive=null;
+						byte[] receive=BluetoothDataTransportation.receive();
+						BluetoothDataTransportation.receive=null;
 						String sentence=transfer.parseSentenceXML(new ByteArrayInputStream(receive));
 						Message msg=handler.obtainMessage();
 						msg.what=2;
@@ -158,7 +159,7 @@ public class TransferPriceActivity extends Activity {
 						}
 						msg.sendToTarget();
 						try {
-							BluetoothOperation.socket.close();
+							BluetoothDataTransportation.socket.close();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
