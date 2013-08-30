@@ -1,4 +1,4 @@
-package com.XML;
+package cn.edu.seu.transfer;
 
 public class Transfer {
 

@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
-import cn.edu.seu.datatransportation.BluetoothDataTransportation.ReadThread;
-import cn.edu.seu.datatransportation.BluetoothDataTransportation.SendThread;
 
 import com.Picker.Picker;
 import com.RSA.RSA;
@@ -84,12 +82,7 @@ public class ConfirmListActivity extends Activity{
 						startActivity(intent);
 						GoodsListActivity.flag=1;
 						ConfirmListActivity.this.finish();
-						try {
-							BluetoothDataTransportation.socket.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						MainActivity.bdt.close();
 						
 					}
 		    		
@@ -162,7 +155,7 @@ public class ConfirmListActivity extends Activity{
 						String cardnumber=MainActivity.person.getCardNum();
 						String tradetime=String.valueOf(dt.getTime()/1000);
 						String buyerdevice=BluetoothDataTransportation.getLocalMac().replaceAll(":","");
-						String salerdevice=BluetoothDataTransportation.mac.replaceAll(":","");
+						String salerdevice=MainActivity.bdt.getRemoteMac().replaceAll(":","");
 						int totalpricefill=(int)(Double.valueOf(totalprice)*100);
 						String pricefill=String.format("%08d",totalpricefill);
 						String buyerdevicesub=buyerdevice.substring(buyerdevice.length()-4,buyerdevice.length());
@@ -183,9 +176,9 @@ public class ConfirmListActivity extends Activity{
 						confirmTrade.setTrade(buyerdevice, salerdevice, tradetime, totalprice, cipher,cardnumber);
 						String xml=confirmTrade.produceTradeXML("confirmTrade");
 						Log.d("",xml);
-						if(BluetoothDataTransportation.send(xml))
+						if(MainActivity.bdt.write(xml))
 						{
-							byte[] receive=BluetoothDataTransportation.receive();
+							byte[] receive=MainActivity.bdt.read();
 							loaded=1;
 							Message msg=handler.obtainMessage();
 							msg.what=0;
@@ -197,7 +190,6 @@ public class ConfirmListActivity extends Activity{
 					    	msg.obj=sentence;
 					    	msg.sendToTarget();
 		 					Log.d("",new String(receive));
-		 					BluetoothDataTransportation.receive=null;
 		 					//更新余额
 							
 						}

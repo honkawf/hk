@@ -1,9 +1,11 @@
-package com.buyertest;
+package cn.edu.seu.transfer;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
-import cn.edu.seu.datatransportation.BluetoothDataTransportation.ClientThread;
 
 import com.XML.XML;
+import com.buyertest.R;
+import com.buyertest.R.id;
+import com.buyertest.R.layout;
 import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;
@@ -18,7 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ReceiverActivity extends Activity{
+public class ReceiverInfoActivity extends Activity{
 	private TextView storeInfo;
 	private Button btnConfirm;
 	private ProgressDialog pd;
@@ -28,7 +30,7 @@ public class ReceiverActivity extends Activity{
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case 1:
-            	pd=new ProgressDialog(ReceiverActivity.this);
+            	pd=new ProgressDialog(ReceiverInfoActivity.this);
 				pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 				pd.setCancelable(false);
 				pd.setMessage((String)msg.obj);  
@@ -36,9 +38,9 @@ public class ReceiverActivity extends Activity{
                 break;
             case 0:
                 pd.dismiss();
-                Intent intent=new Intent(ReceiverActivity.this,TransferPriceActivity.class);
+                Intent intent=new Intent(ReceiverInfoActivity.this,TransferPriceActivity.class);
                 startActivity(intent);
-                ReceiverActivity.this.finish();
+                ReceiverInfoActivity.this.finish();
                 break;
             }
             super.handleMessage(msg);
@@ -69,17 +71,13 @@ public class ReceiverActivity extends Activity{
  						msg.what=1;
  						msg.obj="正在连接";
  						msg.sendToTarget();
- 						while(BluetoothDataTransportation.isConnected==0);
-                  		BluetoothDataTransportation.isConnected=0;
+ 						while(!TransferActivity.bdt.isConnected());
  						msg=handler.obtainMessage();
  						msg.what=0;
  						msg.sendToTarget();
  					}
  				}.start();
-                BluetoothDataTransportation.mac=mac;
-            	BluetoothDataTransportation bo=new BluetoothDataTransportation();
-         		BluetoothDataTransportation.ClientThread ct=bo.new ClientThread();
-         		ct.start();
+                TransferActivity.bdt.createSocket();
          		
          		Log.d("point","1");
 			}

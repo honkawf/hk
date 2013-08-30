@@ -1,4 +1,4 @@
-package com.buyertest;
+package cn.edu.seu.transfer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -12,9 +12,12 @@ import java.util.UUID;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.datatransportation.ClsUtils;
-import cn.edu.seu.datatransportation.BluetoothDataTransportation.ClientThread;
 
 import com.XML.XML;
+import com.buyertest.R;
+import com.buyertest.R.id;
+import com.buyertest.R.layout;
+import com.buyertest.R.menu;
 import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;
@@ -58,6 +61,7 @@ public class TransferActivity extends Activity {
 	private BluetoothSocket socket;
 	private String []storeInfo=new String[2];
 	private TextView receive;
+	public static BluetoothDataTransportation bdt=new BluetoothDataTransportation();
      @Override 
      public void onCreate(Bundle savedInstanceState) { 
          super.onCreate(savedInstanceState); 
@@ -93,8 +97,8 @@ public class TransferActivity extends Activity {
                 String[] values = str.split(";");
                 name=values[0];
                	mac= values[1];
-                BluetoothDataTransportation.pair(mac);
-                Intent intent= new Intent(TransferActivity.this,ReceiverActivity.class);
+                bdt.connect(mac);
+                Intent intent= new Intent(TransferActivity.this,ReceiverInfoActivity.class);
                 intent.putExtra("name",name);
                 intent.putExtra("mac",mac);
                 startActivity(intent);

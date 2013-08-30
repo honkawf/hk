@@ -6,8 +6,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
+import cn.edu.seu.datatransportation.DataDeal;
+import cn.edu.seu.transfer.Transfer;
 
-import com.XML.Transfer;
 import com.XML.XML;
 
 import android.app.Activity;
@@ -81,13 +82,13 @@ public class DetailActivity extends Activity{
         			Socket clientsocket=new Socket("honka.xicp.net",30145);
            		 	InputStream in=clientsocket.getInputStream();
            		 	OutputStream out=clientsocket.getOutputStream();
-           		 	out.write(BluetoothDataTransportation.plusHead(cashxml.getBytes().length));
+           		 	out.write(DataDeal.plusHead(cashxml.getBytes().length));
            		 	Log.i("发送到银行长度",String.valueOf(cashxml.getBytes().length));
            		 	out.write(cashxml.getBytes());
            		 	Log.i("发送到银行",cashxml);
            		 	byte [] buffer=new byte[16];
            		 	in.read(buffer);
-           		 	int length=BluetoothDataTransportation.readHead(buffer);
+           		 	int length=DataDeal.readHead(buffer);
            		 	byte [] result=new byte [length];
            		 	in.read(result);
            		 	Log.d("收到",new String(result));

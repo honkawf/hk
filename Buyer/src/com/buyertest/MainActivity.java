@@ -11,11 +11,15 @@ import java.util.List;
 import java.util.Set;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
+import cn.edu.seu.datatransportation.BluetoothReadThread;
+import cn.edu.seu.datatransportation.BluetoothServerThread;
+import cn.edu.seu.datatransportation.BluetoothWriteThread;
 import cn.edu.seu.datatransportation.ClsUtils;
-import cn.edu.seu.datatransportation.BluetoothDataTransportation.ServerThread;
+import cn.edu.seu.transfer.Transfer;
+import cn.edu.seu.transfer.TransferActivity;
+import cn.edu.seu.transfer.TransferWaitingThread;
 
 import com.XML.PersonInfo;
-import com.XML.Transfer;
 import com.XML.XML;
 import com.sqlite.Checkdh;
 import com.zxing.activity.CaptureActivity;
@@ -53,7 +57,7 @@ public class MainActivity extends Activity {
 	private Transfer transfer;
 	public static PersonInfo person=new PersonInfo();;//这里写person的初始化
 	
-	private BluetoothSocket socket;
+	public static BluetoothDataTransportation bdt=new BluetoothDataTransportation();
 	private String mac;
 	private Handler handler = new Handler() {
         @Override
@@ -64,6 +68,16 @@ public class MainActivity extends Activity {
 				 break;
             case 1:
 				 Toast.makeText(MainActivity.this, "收到转账,您可以到我的支票页面进行兑现或转发", 5000).show();
+				 try
+			     {
+					 byte[]receive=(byte[])msg.obj;
+					 Checkdh cdh = new Checkdh(MainActivity.this, "recorddb" , null, 1);
+					 cdh.insert(transfer.getPayerName(), transfer.getPayCardNumber(), transfer.getTotalPrice(), transfer.getTransferTime(), receive , "0"); 
+			     }
+			     catch(Exception e)
+			     {
+			     	Log.e("数据库操作","失败");
+			     }	
 				 break;
             case 2:
             	 Toast.makeText(MainActivity.this, "连接服务器失败", 2000).show();
@@ -108,59 +122,9 @@ public class MainActivity extends Activity {
         	 }
 		 }
          //服务器与转账线程
-         new Thread()
-         {
-        	 public void run()
-        	 {
-        		 while(true)
-                 {
-        			 try
-        			 {
-        				 BluetoothDataTransportation ob=new BluetoothDataTransportation();
-        		         BluetoothDataTransportation.ServerThread st=ob.new ServerThread();
-        		         st.start();
-        		         Log.d("point","1");
-        				 while(BluetoothDataTransportation.receiveConnection==0);
-        				 BluetoothDataTransportation.receiveConnection=0;
-        				 /*被连接上自动发送自己信息，用于个体户付款*/
-                 		/* XML info=new XML();
-                 		 info.addPersonData(person.getUserName(), "","", "", person.getBluetoothMac(), "", "","", "");;
-                 		 String xml=info.producePersonXML("sendReceiverInfo");
-                 		 Log.d("发送",xml);
-                 		 BluetoothOperation.send(xml);*/
-        				 XML info=new XML();
-                         byte[] receive=BluetoothDataTransportation.receive();
-                         BluetoothDataTransportation.receive=null;
-                 		 transfer=info.parseTransferXML(new ByteArrayInputStream(receive));
-                 		 String xml=info.productSentenceXML("转账成功");
-                 		 BluetoothDataTransportation.send(xml);
-                 		 Message msg=handler.obtainMessage();
-                 		 msg.what=1;
-                 		 msg.sendToTarget();
-                 		 BluetoothDataTransportation.mserverSocket.close();
-                 		 try
-                 		 {
-                 			 Checkdh cdh = new Checkdh(MainActivity.this, "recorddb" , null, 1);
-                     		 cdh.insert(transfer.getPayerName(), transfer.getPayCardNumber(), transfer.getTotalPrice(), transfer.getTransferTime(), receive , "0"); 
-                 		 }
-                 		 catch(Exception e)
-                 		 {
-                 			 Log.e("数据库操作","失败");
-                 		 }
-                 		
-
-        			 }
-        			 catch(Exception e)
-        			 {
-        				 Message msg=handler.obtainMessage();
-        				 msg.what=0;
-        				 msg.sendToTarget();
-        			 }
-                     
-                 }
-                 
-        	 }
-         }.start();
+         TransferWaitingThread twt=new TransferWaitingThread(handler);
+         twt.start();
+      
      } 
   
   
@@ -182,8 +146,8 @@ public class MainActivity extends Activity {
  			scanResult = bundle.getString("result");
  			mac=scanResult.split(";")[1];
  			try {
- 				
- 				BluetoothDataTransportation.pair(mac);
+ 				BluetoothDataTransportation bdt=new BluetoothDataTransportation();
+ 				bdt.connect(mac);
  				Toast.makeText(MainActivity.this, scanResult, Toast.LENGTH_LONG).show();
  				Intent store=new Intent(MainActivity.this,StoreInfoActivity.class);
  				store.putExtra("scanResult", scanResult);
@@ -217,12 +181,9 @@ public class MainActivity extends Activity {
             		 }
              }
              else if (v == btnExit) { 
-                 try { 
-                     if (socket != null) 
-                         socket.close(); 
-                 } catch (IOException e) { 
-                     e.printStackTrace(); 
-                 } 
+            	 	if(bdt.isConnected())
+                	 bdt.close();
+              
                  MainActivity.this.finish(); 
              }
              else if(v==btnSta)

@@ -41,15 +41,15 @@
             android:label="@string/app_name" >
         </activity>
          <activity
-            android:name="com.buyertest.TransferActivity"
+            android:name="cn.edu.seu.transfer.TransferActivity"
             android:label="@string/app_name" >
         </activity>
          <activity
-            android:name="com.buyertest.TransferPriceActivity"
+            android:name="cn.edu.seu.transfer.TransferPriceActivity"
             android:label="@string/app_name" >
         </activity>
          <activity
-            android:name="com.buyertest.ReceiverActivity"
+            android:name="cn.edu.seu.transfer.ReceiverInfoActivitytivity"
             android:label="@string/app_name" >
         </activity>
          <activity

@@ -2,8 +2,8 @@ package com.buyertest;
 
 import java.util.Date;
 
+import cn.edu.seu.datatransportation.BluetoothClientThread;
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
-import cn.edu.seu.datatransportation.BluetoothDataTransportation.ClientThread;
 
 import com.XML.XML;
 import com.zxing.activity.CaptureActivity;
@@ -25,6 +25,7 @@ public class StoreInfoActivity extends Activity{
 	private TextView storeInfo;
 	private Button btnConfirm;
 	private ProgressDialog pd;
+	private BluetoothDataTransportation bdt;
 	private String storeName,mac,type;
 	private Handler handler = new Handler() {
         @Override
@@ -96,7 +97,7 @@ public class StoreInfoActivity extends Activity{
                         	 msg.sendToTarget();
                         	 Date dstart=new Date();
                         	 long start=dstart.getTime()/1000;
-                        	 while(BluetoothDataTransportation.isConnected==0)
+                        	 while(!bdt.isConnected())
                         	 {
                         		 Date dend=new Date();
                         		 long end=dend.getTime()/1000;
@@ -108,17 +109,13 @@ public class StoreInfoActivity extends Activity{
                              		 return;
                         		 }
                         	 }
-                     		 BluetoothDataTransportation.isConnected=0;
                         	 Log.d("point","4");
                      		 msg=handler.obtainMessage();
                      		 msg.what=0;
                      		 msg.sendToTarget();
         				 }
         			 }.start();
-                	 BluetoothDataTransportation.mac=mac;
-                	 BluetoothDataTransportation bo=new BluetoothDataTransportation();
-             		 BluetoothDataTransportation.ClientThread ct=bo.new ClientThread();
-             		 ct.start();
+             		 MainActivity.bdt.createSocket();
         			 Log.i("确认信息","顾客已确认");
 
                  }
@@ -134,7 +131,7 @@ public class StoreInfoActivity extends Activity{
                         	 msg.sendToTarget();
                         	 Date dstart=new Date();
                         	 long start=dstart.getTime()/1000;
-                        	 while(BluetoothDataTransportation.isConnected==0)
+                        	 while(!bdt.isConnected())
                         	 {
                         		 Date dend=new Date();
                         		 long end=dend.getTime()/1000;
@@ -147,17 +144,13 @@ public class StoreInfoActivity extends Activity{
                              		 return;
                         		 }
                         	 }
-                     		 BluetoothDataTransportation.isConnected=0;
                         	 Log.d("point","4");
                      		 msg=handler.obtainMessage();
                      		 msg.what=3;
                      		 msg.sendToTarget();
         				 }
         			 }.start();
-                	 BluetoothDataTransportation.mac=mac;
-                	 BluetoothDataTransportation bo=new BluetoothDataTransportation();
-             		 BluetoothDataTransportation.ClientThread ct=bo.new ClientThread();
-             		 ct.start();
+        			 MainActivity.bdt.createSocket();
         			 Log.i("确认信息","顾客已确认");
                  	
                  	

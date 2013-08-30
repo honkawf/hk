@@ -169,9 +169,9 @@ public class GoodsListActivity extends Activity{
  						}
  						String xml=getPrice.producePriceXML("getTotalPrice");
  				        byte[] receive;
- 						if(BluetoothDataTransportation.send(xml))
+ 						if(MainActivity.bdt.write(xml))
  						{
- 							receive=BluetoothDataTransportation.receive();
+ 							receive=MainActivity.bdt.read();
  							loaded=1;
  							Message msg=handler.obtainMessage();
  			 				msg.what=0;
@@ -182,7 +182,6 @@ public class GoodsListActivity extends Activity{
  		 				try{
  			 				totalprice=getPrice.parseTotalPriceXML(new ByteArrayInputStream(receive));
  			 				Log.i("收到总价",totalprice);
- 			 				BluetoothDataTransportation.receive=null;
  			 				Message msg=handler.obtainMessage();
  			 				msg.what=3;
  			 				msg.sendToTarget();
@@ -251,9 +250,9 @@ public class GoodsListActivity extends Activity{
  		 					getPrice.addData(scanResult, "", "", "1");
  		 					String xml=getPrice.producePriceXML("getPrice");
  		 					byte [] receive;
- 		 					if(BluetoothDataTransportation.send(xml))
+ 		 					if(MainActivity.bdt.write(xml))
  		 					{
- 		 						receive=BluetoothDataTransportation.receive();
+ 		 						receive=MainActivity.bdt.read();
  		 						loaded=1;
  		 						Message msg=handler.obtainMessage();
  	 			 				msg.what=0;
@@ -267,7 +266,7 @@ public class GoodsListActivity extends Activity{
  		 						{
  		 							Log.i("info","条形码不存在");
  		 							//Toast.makeText(GoodsListActivity.this, "条形码不存在", 500).show();
- 		 							BluetoothDataTransportation.receive=null;
+ 		 							
  		 							
  		 						}
  		 						else{
@@ -277,7 +276,6 @@ public class GoodsListActivity extends Activity{
  		 	 							msg.what=2;
  		 	 							msg.sendToTarget();
  		 	 	 				        barcodeset.add(goods.getBarcode());
- 		 	 	 				        BluetoothDataTransportation.receive=null;
  		 	 	 					}
  		 	 	 					catch(Exception e)
  		 	 	 					{

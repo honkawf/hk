@@ -1,4 +1,4 @@
-package com.buyertest;
+package cn.edu.seu.transfer;
 
 
 import java.io.ByteArrayInputStream;
@@ -10,6 +10,11 @@ import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import com.RSA.RSA;
 import com.XML.PersonInfo;
 import com.XML.XML;
+import com.buyertest.GoodsListActivity;
+import com.buyertest.MainActivity;
+import com.buyertest.R;
+import com.buyertest.R.id;
+import com.buyertest.R.layout;
 
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -37,6 +42,7 @@ public class TransferPriceActivity extends Activity {
 	private EditText editText1;
 	private Button btnConfirm;
 	private ProgressDialog pd;
+	private boolean loaded=false;
 	private PersonInfo receiver;
 	private Handler handler = new Handler() {
 	@Override
@@ -61,12 +67,7 @@ public class TransferPriceActivity extends Activity {
 							Intent intent=new Intent(TransferPriceActivity.this,MainActivity.class);
 							startActivity(intent);
 							GoodsListActivity.flag=1;
-							try {
-								BluetoothDataTransportation.socket.close();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+							TransferActivity.bdt.close();
 							
 						}
 			    		
@@ -104,7 +105,7 @@ public class TransferPriceActivity extends Activity {
 						msg.sendToTarget();
 						Date d=new Date();
 						long start=d.getTime()/1000;
-						while(BluetoothDataTransportation.receive==null)
+						while(loaded==false)
 						{
 							long end=d.getTime()/1000;
 							if(end-start>120)
@@ -130,7 +131,7 @@ public class TransferPriceActivity extends Activity {
 						String username=MainActivity.person.getUserName();
 						String transfertime=String.valueOf(dt.getTime()/1000);
 						String payerdevice=BluetoothDataTransportation.getLocalMac().replaceAll(":","");
-						String receiverdevice=BluetoothDataTransportation.mac.replaceAll(":","");
+						String receiverdevice=TransferActivity.bdt.getRemoteMac().replaceAll(":","");
 						int totalpricefill=(int)(Double.valueOf(totalprice)*100);
 						String pricefill=String.format("%08d",totalpricefill);
 						String payerdevicesub=payerdevice.substring(payerdevice.length()-4,payerdevice.length());
@@ -142,10 +143,9 @@ public class TransferPriceActivity extends Activity {
 						String cipher=rsa.setRSA(words);
 						transfer.setTransfer(payerdevice, "", username, "", transfertime, totalprice, cipher, cardnumber, "");
 						String xml=transfer.produceTransferXML("transfer");
-						BluetoothDataTransportation.send(xml);
+						TransferActivity.bdt.write(xml);
 						Log.d("发送",xml);
-						byte[] receive=BluetoothDataTransportation.receive();
-						BluetoothDataTransportation.receive=null;
+						byte[] receive=TransferActivity.bdt.read();
 						String sentence=transfer.parseSentenceXML(new ByteArrayInputStream(receive));
 						Message msg=handler.obtainMessage();
 						msg.what=2;
@@ -158,12 +158,7 @@ public class TransferPriceActivity extends Activity {
 							//扣除余额
 						}
 						msg.sendToTarget();
-						try {
-							BluetoothDataTransportation.socket.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						TransferActivity.bdt.close();
 								
 					}
 				}.start();
