@@ -7,17 +7,14 @@ import cn.edu.seu.gesturepassword.LockPatternView;
 import cn.edu.seu.gesturepassword.LockPatternView.Cell;
 import cn.edu.seu.gesturepassword.LockPatternView.OnPatternListener;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
-import android.R.integer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.Toast;
 
 
 public class SetGestureFirstActivity extends Activity implements OnClickListener {

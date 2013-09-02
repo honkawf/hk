@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import cn.edu.seu.gesturepassword.SetFirstActivity;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 public class ModifyActivity extends Activity {
 

@@ -6,7 +6,7 @@ import java.util.Date;
 import cn.edu.seu.main.MainActivity;
 import cn.edu.seu.xml.XML;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 import com.zxing.activity.CaptureActivity;
 import cn.edu.seu.pay.TimeOutProgressDialog.OnTimeOutListener;
 import android.app.Activity;
@@ -46,7 +46,6 @@ public class StoreInfoActivity extends Activity{
             case 1:
             	pd=TimeOutProgressDialog.createProgressDialog(StoreInfoActivity.this,50000,new OnTimeOutListener(){
 
-
 					public void onTimeOut(TimeOutProgressDialog dialog) {
 						// TODO Auto-generated method stub
 						try{
@@ -57,9 +56,8 @@ public class StoreInfoActivity extends Activity{
 							Log.i(TAG, "线程打断失败");
 						}
 						AlertDialog.Builder builder = new Builder(StoreInfoActivity.this);
-				    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+				    	builder.setTitle("连接信息").setMessage("连接失败").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
 
-	
 							public void onClick(DialogInterface arg0, int arg1) {
 								// TODO Auto-generated method stub
 								Intent intent=new Intent(StoreInfoActivity.this,MainActivity.class);
@@ -82,8 +80,7 @@ public class StoreInfoActivity extends Activity{
             case 2:
             	pd.dismiss();
             	AlertDialog.Builder builder = new Builder(StoreInfoActivity.this);
-		    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
-
+		    	builder.setTitle("连接信息").setMessage("连接失败").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
 
 					public void onClick(DialogInterface arg0, int arg1) {
 						// TODO Auto-generated method stub
@@ -107,7 +104,7 @@ public class StoreInfoActivity extends Activity{
             super.handleMessage(msg);
         }
     };
-
+	
 	public void onCreate(Bundle savedInstanceState)
 	{
 		 super.onCreate(savedInstanceState); 
@@ -131,7 +128,7 @@ public class StoreInfoActivity extends Activity{
         	 startActivityForResult(openCameraIntent, 0);   
          }
          btnConfirm.setOnClickListener(new Button.OnClickListener(){
-
+        	 
         	 public void onClick(View v) {
         		 // TODO Auto-generated method stub
         		 if(type.equals("supermarket"))

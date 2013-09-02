@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 public class DepositFirstActivity extends Activity {
 

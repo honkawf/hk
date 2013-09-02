@@ -3,7 +3,7 @@ package cn.edu.seu.login;
 
 import java.io.File;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import cn.edu.seu.ciphertext.MD5;
 import cn.edu.seu.cose.register.RegisterActivity;

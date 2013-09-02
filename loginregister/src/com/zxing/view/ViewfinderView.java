@@ -29,7 +29,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.google.zxing.ResultPoint;
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 import com.zxing.camera.CameraManager;
 
 /**

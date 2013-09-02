@@ -11,7 +11,7 @@ import cn.edu.seu.datatransportation.NetDataTransportation;
 import cn.edu.seu.gesturepassword.SetFirstActivity;
 import cn.edu.seu.xml.XML;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 
 import android.app.Activity;

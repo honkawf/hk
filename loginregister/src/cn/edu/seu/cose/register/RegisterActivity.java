@@ -11,7 +11,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 
 import cn.edu.seu.ciphertext.MD5;

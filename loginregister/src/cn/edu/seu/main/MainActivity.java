@@ -10,9 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.wgs.jiesuo.R;
-import com.zxing.activity.CaptureActivity;
-
 import cn.edu.seu.check.Check;
 import cn.edu.seu.check.CheckActivity;
 import cn.edu.seu.check.Checkdh;
@@ -21,14 +18,15 @@ import cn.edu.seu.datatransportation.BluetoothReadThread;
 import cn.edu.seu.datatransportation.BluetoothServerThread;
 import cn.edu.seu.datatransportation.BluetoothWriteThread;
 import cn.edu.seu.datatransportation.ClsUtils;
-import cn.edu.seu.datatransportation.PersonInfo;
-import cn.edu.seu.gesturepassword.LockActivity;
-import cn.edu.seu.login.FunctionActivity;
 import cn.edu.seu.pay.StoreInfoActivity;
-import cn.edu.seu.transfer.Transfer;
 import cn.edu.seu.transfer.TransferActivity;
 import cn.edu.seu.transfer.TransferWaitingThread;
+import cn.edu.seu.xml.PersonInfo;
+import cn.edu.seu.xml.Transfer;
 import cn.edu.seu.xml.XML;
+
+import cn.edu.seu.main.R;
+import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -57,13 +55,12 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 public class MainActivity extends Activity {
     /** Called when the activity is first created. */
-
 	private Button btnClo, btnExit,btnSta,btnTran,btnCheck; 
 	private BluetoothAdapter btAdapt; 
 	private String scanResult;
 	private Transfer transfer;
 	public static PersonInfo person=new PersonInfo();;//这里写person的初始化
-	
+    public static boolean s = true;
 	public static BluetoothDataTransportation bdt=new BluetoothDataTransportation();
 	private String mac;
 	private Handler handler = new Handler() {
@@ -96,19 +93,6 @@ public class MainActivity extends Activity {
             super.handleMessage(msg);
         }
     };
-    
-    public static boolean s = true;
-	private BroadcastReceiver receiver = new BroadcastReceiver(){
-
-		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
-			if(s){
-				Intent it = new Intent(MainActivity.this , LockActivity.class);
-				startActivity(it);
-				s = false;
-			}
-		}	
-	};
      @Override 
      public void onCreate(Bundle savedInstanceState) { 
          super.onCreate(savedInstanceState); 
@@ -119,9 +103,6 @@ public class MainActivity extends Activity {
      		person.setCardnum("4816057396530741749");
      		person.setImei("12313156664");
      	}//载入person
-        final IntentFilter filter = new IntentFilter();
- 		filter.addAction(Intent.ACTION_SCREEN_OFF);
- 		registerReceiver(receiver,filter);
          btAdapt = BluetoothAdapter.getDefaultAdapter();// 初始化本机蓝牙功能 
          // Button 设置 
          btnSta=(Button)findViewById(R.id.btnSta);
@@ -161,7 +142,6 @@ public class MainActivity extends Activity {
          super.onDestroy(); 
          android.os.Process.killProcess(android.os.Process.myPid()); 
      } 
-
      protected void onActivityResult(int requestCode, int resultCode, Intent data) {
  		super.onActivityResult(requestCode, resultCode, data);
  			if (resultCode == RESULT_OK) {

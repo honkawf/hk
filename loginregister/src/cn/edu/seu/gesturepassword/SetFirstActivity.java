@@ -15,7 +15,7 @@ import cn.edu.seu.gesturepassword.LockPatternView.Cell;
 import cn.edu.seu.gesturepassword.LockPatternView.OnPatternListener;
 import cn.edu.seu.login.Mapplication;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 public class SetFirstActivity extends Activity implements OnClickListener {
 

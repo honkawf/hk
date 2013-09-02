@@ -83,12 +83,10 @@ public class BluetoothDataTransportation implements IDataTransportation{
     {
     	return address;
     }
-
 	public Object connect(String address, int port) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	public boolean write(String xml) {
 		// TODO Auto-generated method stub
 		if(xml.equals(""))
@@ -107,7 +105,7 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		}
 		return true;
 	}
-
+	
 	public byte[] read() {
 		// TODO Auto-generated method stub
 		BluetoothReadThread brt=new BluetoothReadThread(socket);
@@ -120,7 +118,7 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		}
 		return brt.getReceive();
 	}
-
+	
 	public boolean close() {
 		// TODO Auto-generated method stub
 		try {

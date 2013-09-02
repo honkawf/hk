@@ -3,7 +3,7 @@ package cn.edu.seu.cose.register;
 import java.io.File;
 import java.util.List;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import android.R.integer;
 import android.app.Activity;

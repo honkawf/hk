@@ -1,6 +1,6 @@
 package cn.edu.seu.login;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import android.app.Activity;
 import android.os.Bundle;

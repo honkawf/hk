@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import cn.edu.seu.dboperation.CornerListView;
 import cn.edu.seu.dboperation.ListViewAdapter;

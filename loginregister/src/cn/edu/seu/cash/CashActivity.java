@@ -10,7 +10,7 @@ import java.util.Properties;
 import cn.edu.seu.datadeal.DataDeal;
 import cn.edu.seu.datadeal.PropertyInfo;
 import cn.edu.seu.main.MainActivity;
-import cn.edu.seu.transfer.Transfer;
+import cn.edu.seu.xml.Transfer;
 import cn.edu.seu.xml.XML;
 import android.app.Activity;
 import android.os.Bundle;

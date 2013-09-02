@@ -20,7 +20,7 @@ import cn.edu.seu.login.Mapplication;
 import cn.edu.seu.login.ReloginActivity;
 import cn.edu.seu.main.MainActivity;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 public class LockActivity extends Activity implements OnClickListener {
 

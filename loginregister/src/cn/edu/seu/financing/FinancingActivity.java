@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 public class FinancingActivity extends Activity {
 

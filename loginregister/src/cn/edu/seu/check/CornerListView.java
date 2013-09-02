@@ -2,7 +2,7 @@ package cn.edu.seu.check;
 
 
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import android.content.Context;
 import android.util.AttributeSet;

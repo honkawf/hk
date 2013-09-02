@@ -3,7 +3,7 @@ package cn.edu.seu.dboperation;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import android.content.Context;
 import android.view.View;

@@ -14,7 +14,6 @@ import org.xmlpull.v1.XmlSerializer;
 import cn.edu.seu.datatransportation.LocalInfo;
 import cn.edu.seu.financing.PersonDepositInfo;
 import cn.edu.seu.financing.PersonInterestInfo;
-import cn.edu.seu.transfer.Transfer;
 
 
 import android.util.Log;
@@ -415,6 +414,10 @@ public class XML {
 	    	                	transfer.setPayerDevice(xpp.nextText());
 	    	                else if (xpp.getName().equals("receiverdevice")) 
 	    	                	transfer.setReceiverDevice(xpp.nextText());
+	    	                else if (xpp.getName().equals("payerimei")) 
+	    	                	transfer.setPayerIMEI(xpp.nextText());
+	    	                else if (xpp.getName().equals("receiverimei")) 
+	    	                	transfer.setReceiverIMEI(xpp.nextText());
 	    	                else if (xpp.getName().equals("payername")) 
 	    	                	transfer.setPayerName(xpp.nextText());
 	    	                else if(xpp.getName().equals("receivername"))
@@ -835,4 +838,10 @@ public class XML {
 		    {
 		    	this.transfer=transfer;
 		    }
+
+		    public Trade getTrade()
+		    {
+		    	return trade;
+		    }
+
 }

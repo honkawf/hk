@@ -14,7 +14,7 @@ import cn.edu.seu.main.MainActivity;
 import cn.edu.seu.xml.Goods;
 import cn.edu.seu.xml.XML;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;
@@ -89,7 +89,7 @@ public class GoodsListActivity extends Activity{
        	     	break;
             case 5:
             	pd.dismiss();
-            	Toast.makeText(GoodsListActivity.this, "连接超时，请重试", 5000).show();
+            	Toast.makeText(GoodsListActivity.this, "连接失败，请重试", 5000).show();
             	break;
             case 6:
             	Toast.makeText(GoodsListActivity.this, "条形码不存在", 5000).show();
@@ -116,7 +116,6 @@ public class GoodsListActivity extends Activity{
         goon=(Button)findViewById(R.id.goon);
         goon.setOnClickListener(new Button.OnClickListener(){
 
-
 			public void onClick(View v) {
 				goon.setText("继续购物");
 				Intent openCameraIntent = new Intent(GoodsListActivity.this,CaptureActivity.class);
@@ -128,7 +127,7 @@ public class GoodsListActivity extends Activity{
         Log.d("point","11");
         confirm.setOnClickListener(new Button.OnClickListener(){
 
-
+			
 			public void onClick(View arg0) {
 				boolean condition1=(goodslist.size()==0);
 				if(condition1)
@@ -320,24 +319,21 @@ public class GoodsListActivity extends Activity{
 		public MyAdapter(Context context){
 			this.mInflater = LayoutInflater.from(context);
 			}
-
 	        public int getCount() {
 	            // TODO Auto-generated method stub
 	             return goodslist.size();
 	        }
 	 
-
 	        public Object getItem(int arg0) {
 	            // TODO Auto-generated method stub
 	            return null;
 	        }
 	 
-
 	        public long getItemId(int arg0) {
 	            // TODO Auto-generated method stub
 	            return 0;
 	        }
-
+	     
 	        public View getView(final int position, View convertView, ViewGroup parent) {
 	 			ViewHolder holder;
 	            if (convertView == null) {
@@ -362,7 +358,6 @@ public class GoodsListActivity extends Activity{
 	            holder.price.setText((String)goodslist.get(position).get("price"));
 	            holder.picker.getButtonMinus().setOnClickListener(new Button.OnClickListener() {
 					
-
 					public void onClick(View v) {
 						Picker getPicker=pickerlist.get(pickerlist.size()-position-1);
 						//Picker getPicker=pickerlist.get(position);
@@ -378,7 +373,6 @@ public class GoodsListActivity extends Activity{
 				});
 	            holder.picker.getButtonPlus().setOnClickListener(new Button.OnClickListener() {
 					
-
 					public void onClick(View v) {
 						Picker getPicker=pickerlist.get(pickerlist.size()-position-1);
 						//Picker getPicker=pickerlist.get(position);

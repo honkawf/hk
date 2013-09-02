@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.Map;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.datatransportation.LocalInfoIO;
@@ -37,7 +37,7 @@ public class ConfirmPriceActivity extends Activity{
     private Thread sendAndReceiveThread;
     private final static String TAG="ConfirmPriceActivity";
 	private Handler handler = new Handler() {
-        @Override
+        
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case 1:
@@ -45,16 +45,10 @@ public class ConfirmPriceActivity extends Activity{
 
 					public void onTimeOut(TimeOutProgressDialog dialog) {
 						// TODO Auto-generated method stub
-						try{
-							sendAndReceiveThread.interrupt();
-						}
-						catch(Exception e)
-						{
-							Log.i(TAG, "线程打断失败");
-						}
 						AlertDialog.Builder builder = new Builder(ConfirmPriceActivity.this);
-				    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+				    	builder.setTitle("连接信息").setMessage("连接失败").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
 
+							
 							public void onClick(DialogInterface arg0, int arg1) {
 								// TODO Auto-generated method stub
 								Intent intent=new Intent(ConfirmPriceActivity.this,MainActivity.class);

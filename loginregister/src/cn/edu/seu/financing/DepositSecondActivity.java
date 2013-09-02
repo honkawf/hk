@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.AdapterView.OnItemSelectedListener;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 public class DepositSecondActivity extends Activity {
 

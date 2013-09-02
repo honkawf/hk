@@ -4,7 +4,7 @@ import cn.edu.seu.financing.FinancingActivity;
 import cn.edu.seu.gesturepassword.LockActivity;
 import cn.edu.seu.personinfomodify.ModifyActivity;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

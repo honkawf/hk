@@ -5,12 +5,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import cn.edu.seu.datadeal.DataDeal;
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.main.MainActivity;
-import cn.edu.seu.transfer.Transfer;
+import cn.edu.seu.xml.Transfer;
 import cn.edu.seu.xml.XML;
 
 import android.app.Activity;

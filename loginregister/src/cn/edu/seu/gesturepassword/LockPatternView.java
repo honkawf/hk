@@ -20,7 +20,7 @@ package cn.edu.seu.gesturepassword;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wgs.jiesuo.R;
+import cn.edu.seu.main.R;
 
 import android.content.Context;
 import android.content.res.TypedArray;
