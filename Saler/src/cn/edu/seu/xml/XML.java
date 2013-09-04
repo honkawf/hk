@@ -28,7 +28,7 @@ public class XML {
 				    	if(xpp.getName().equals("information"))
 				    	{
 
-		            		if(!xpp.getAttributeValue(null,"event").equals("localBalance"))
+		            		if(!xpp.getAttributeValue(null,"event").equals("localbalance"))
 		            			return sentence;
 		            		else
 		            		{	
@@ -230,29 +230,4 @@ public class XML {
 		        }  
 		        return stringWriter.toString();  
 	    }
-	public String productConfirmXML(String event,double totalprice)
-    {
-    	 StringWriter stringWriter = new StringWriter();  
-	        try {  
-	            // 获取XmlSerializer对象  
-	            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();  
-	            XmlSerializer xmlSerializer = factory.newSerializer();  
-	            // 设置输出流对象  
-	            xmlSerializer.setOutput(stringWriter);  
-	         
-	            xmlSerializer.startDocument("utf-8", true);
-	            xmlSerializer.startTag(null, "information");
-	            xmlSerializer.attribute(null, "event", event);
-	            xmlSerializer.startTag(null, "totalprice");
-	            xmlSerializer.text(String.valueOf(totalprice));
-	            xmlSerializer.endTag(null, "totalprice");
-	            xmlSerializer.endTag(null, "information");
-	            xmlSerializer.endDocument();
-    		} catch (Exception e) {  
-    			e.printStackTrace();  
-    		}  
-    		return stringWriter.toString();  
-    }
-	
-
 }

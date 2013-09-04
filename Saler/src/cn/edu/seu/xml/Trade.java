@@ -3,17 +3,17 @@ package cn.edu.seu.xml;
 
 public class Trade {
 
-	private String payerdevice;
-	private String receiverdevice;
-	private String payername;
-	private String payerimei;
-	private String receivername;
-	private String receiverimei;
-	private String tradetime;
-	private String totalprice;
-	private String cipher;
-	private String payercardnumber;
-	private String receivercardnumber;
+	private String payerdevice="";
+	private String receiverdevice="";
+	private String payername="";
+	private String payerimei="";
+	private String receivername="";
+	private String receiverimei="";
+	private String tradetime="";
+	private String totalprice="";
+	private String cipher="";
+	private String payercardnumber="";
+	private String receivercardnumber="";
 	public Trade()
 	{
 		

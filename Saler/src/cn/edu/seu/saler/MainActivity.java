@@ -100,13 +100,6 @@ public class MainActivity extends Activity {
          
   
      } 
-     @Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		WaitingPayThread wpt=new WaitingPayThread(handler);
-	    wpt.start();
-	}
 	class ClickEvent implements View.OnClickListener { 
          @Override 
          public void onClick(View v) { 

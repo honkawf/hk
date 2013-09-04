@@ -74,7 +74,14 @@ public class InputActivity extends Activity {
 			public void onClick(View arg0) {
 				XML info = new XML();
 				b1.setVisibility(View.GONE);
-				MainActivity.bdt.write(info.productSentenceXML(ed.getText().toString()));
+				Trade trade=new Trade();
+				trade.setReceiverCardNumber(MainActivity.person.getCardnum());
+				trade.setReceiverDevice(MainActivity.person.getBluetoothmac());
+				trade.setReceiverIMEI(MainActivity.person.getImei());
+				trade.setReceiverName(MainActivity.person.getUsername());
+				trade.setTotalPrice(ed.getText().toString());
+				info.setTrade(trade);
+				MainActivity.bdt.write(info.produceIndividualTradeXML("individualTrade"));
 				new Thread()
 				{
 					public void run()
@@ -107,16 +114,10 @@ public class InputActivity extends Activity {
 						XML info=new XML();
 						byte[] receive=MainActivity.bdt.read();
 						Trade trade=info.parseIndividualTradeXML(new ByteArrayInputStream(receive));
-						trade.setReceiverCardNumber(MainActivity.person.getCardnum());
-						trade.setReceiverDevice(MainActivity.person.getBluetoothmac());
-						trade.setReceiverIMEI(MainActivity.person.getImei());
-						trade.setReceiverName(MainActivity.person.getUsername());
-						info.setTrade(trade);
-						String send=info.produceIndividualTradeXML("individualTrade");
 						Properties server=PropertyInfo.getProperties();
 						NetDataTransportation ndt=new NetDataTransportation();
 						ndt.connect(server.getProperty("serverAddress"),Integer.parseInt(server.getProperty("serverPort")));
-						ndt.write(send);
+						ndt.write(new String(receive));
 						byte[] receive1=ndt.read();
 						byte[] receive2=ndt.read();
 						Message msg=handler.obtainMessage();
@@ -124,10 +125,11 @@ public class InputActivity extends Activity {
 						msg.sendToTarget();
 						loaded=true;
 						String sentence=info.parseBalanceXML(new ByteArrayInputStream(receive1));
+						Log.i("sentence",sentence);
 						if(sentence.equals(""))
 						{
 							MainActivity.bdt.write(new String(receive1));
-							sentence=info.parseBalanceXML(new ByteArrayInputStream(receive1));
+							sentence=info.parseBalanceXML(new ByteArrayInputStream(receive2));
 						}
 						else
 						{

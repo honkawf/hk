@@ -16,25 +16,27 @@ public class WaitingPayThread extends Thread{
 	}
 	public void run()
 	{
-			 try{
+		 while(true)
+		 {
+			 try
+			 {
 				 MainActivity.bdt.createServer();
 				 Message msg=handler.obtainMessage();
 				 msg.what=1;
-				 if(MainActivity.bdt.isConnected())
-				 {
-					 byte[]receive=MainActivity.bdt.read();
-					 XML info=new XML();
-					 String sentence=info.parseSentenceXML(new ByteArrayInputStream(receive));
-					 if(sentence.equals("我要付款"))
-						 msg.sendToTarget();
-					 else
-						 MainActivity.bdt.close();
-				 }
+				 while(!MainActivity.bdt.isConnected());
+				 byte[]receive=MainActivity.bdt.read();
+				 XML info=new XML();
+				 String sentence=info.parseSentenceXML(new ByteArrayInputStream(receive));
+				 if(sentence.equals("我要付款"))
+					 msg.sendToTarget();
+				 else
+					 MainActivity.bdt.close();
 			 }
 			 catch(Exception e)
 			 {
 				 MainActivity.bdt.close();
 			 }
+		 }
 			 
 	}
 }
