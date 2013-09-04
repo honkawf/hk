@@ -81,9 +81,10 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		// TODO Auto-generated method stub
 		if(xml.equals(""))
 			return false;
-		while(socket==null)
+		if(socket==null)
 		{
 			createSocket();
+			while(socket==null);
 		}
 		BluetoothWriteThread bst=new BluetoothWriteThread(socket,xml);
 		bst.start();
