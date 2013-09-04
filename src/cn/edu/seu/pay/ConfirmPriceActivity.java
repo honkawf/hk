@@ -7,12 +7,11 @@ import java.util.Map;
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.datatransportation.LocalInfoIO;
 import cn.edu.seu.main.MainActivity;
-
-import com.XML.XML;
 import cn.edu.seu.main.R;
 import cn.edu.seu.record.Record;
 import cn.edu.seu.record.Recorddh;
-
+import cn.edu.seu.xml.Trade;
+import cn.edu.seu.xml.XML;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -30,11 +29,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ConfirmPriceActivity extends Activity{
-	private TextView price;
+	private TextView price,receivername;
 	private Button confirm;
     private ProgressDialog pd;
     private boolean loaded=false;
-    private String pri="";
+    private byte[] receive;
+    private Trade trade;
 	private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -83,9 +83,14 @@ public class ConfirmPriceActivity extends Activity{
         setContentView(R.layout.confirmprice);
         confirm=(Button) findViewById(R.id.confirm4);
         price=(TextView)findViewById(R.id.price);
+        receivername=(TextView)findViewById(R.id.receivername);
         Intent intent=getIntent();
-        pri=intent.getStringExtra("price");
-        price.setText(pri+"元");
+        receive=intent.getByteArrayExtra("receive");
+        XML info =new XML();
+        info.setTrade(trade);
+        trade=info.parseIndividualTradeXML(new ByteArrayInputStream(receive));
+        price.setText(trade.getTotalPrice()+"元");
+        receivername.setText("收款人:"+trade.getReceiverName());
         confirm.setOnClickListener(new Button.OnClickListener(){
 
 			@Override
@@ -98,7 +103,7 @@ public class ConfirmPriceActivity extends Activity{
 				String username=MainActivity.person.getUsername();
 				String buyerdevice=BluetoothDataTransportation.getLocalMac().replaceAll(":","");
 				String salerdevice=MainActivity.bdt.getRemoteMac().replaceAll(":","");
-				int totalpricefill=(int)(Double.valueOf(pri)*100);
+				int totalpricefill=(int)(Double.valueOf(trade.getTotalPrice())*100);
 				String pricefill=String.format("%08d",totalpricefill);
 				String buyerdevicesub=buyerdevice.substring(buyerdevice.length()-4,buyerdevice.length());
 				String salerdevicesub=salerdevice.substring(salerdevice.length()-4,salerdevice.length());
@@ -111,7 +116,13 @@ public class ConfirmPriceActivity extends Activity{
 				RSA rsa=new RSA();
 				String cipher=rsa.setRSA(words);
 				XML confirmTrade=new XML();
-				confirmTrade.setTrade(buyerdevice, username, buyerimei, cardnumber, salerdevice, "receivername", "receiverimei", "receivercardnumber", tradetime, pri, cipher);
+				trade.setPayerDevice(buyerdevice);
+				trade.setPayerName(username);
+				trade.setPayerIMEI(buyerimei);
+				trade.setPayerCardNumber(cardnumber);
+				trade.setTradeTime(tradetime);
+				trade.setCipher(cipher);
+				confirmTrade.setTrade(trade);
 				String xml=confirmTrade.produceIndividualTradeXML("individualTrade");
 				MainActivity.bdt.write(xml);
 				new Thread()
@@ -155,9 +166,9 @@ public class ConfirmPriceActivity extends Activity{
 							LocalInfoIO lio = new LocalInfoIO("sdcard/data" , "local.data");
 							lio.modifyBalance(balance);
 							//给交易记录赋值
-						//	Record record = new Record( 0 ,null,null,null,null,null,null,null,null, null);
-						//	Recorddh rdh = new Recorddh(ConfirmPriceActivity.this , "recorddb" , null , 1);
-						//	rdh.insert(record);
+							Record record = new Record( 0 ,trade.getPayerName(),trade.getPayerDevice(),trade.getPayerIMEI(),trade.getReceiverName(),trade.getReceiverDevice(),trade.getReceiverIMEI(),Double.parseDouble(trade.getTotalPrice()),"收款", trade.getTradeTime());
+							Recorddh rdh = new Recorddh(ConfirmPriceActivity.this , "recorddb" , null , 1);
+							rdh.insert(record);
 							Message msg=handler.obtainMessage();
 		            		msg.what=2;
 		            		msg.obj="付款成功";

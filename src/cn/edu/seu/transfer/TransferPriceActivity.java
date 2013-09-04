@@ -9,9 +9,8 @@ import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.main.MainActivity;
 import cn.edu.seu.pay.GoodsListActivity;
 import cn.edu.seu.pay.RSA;
-
-import com.XML.PersonInfo;
-import com.XML.XML;
+import cn.edu.seu.xml.PersonInfo;
+import cn.edu.seu.xml.XML;
 import cn.edu.seu.main.R;
 
 

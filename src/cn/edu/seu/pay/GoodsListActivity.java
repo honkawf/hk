@@ -11,10 +11,10 @@ import java.util.Set;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.main.MainActivity;
-
-import com.XML.Goods;
-import com.XML.XML;
 import cn.edu.seu.main.R;
+import cn.edu.seu.xml.Goods;
+import cn.edu.seu.xml.XML;
+
 import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;

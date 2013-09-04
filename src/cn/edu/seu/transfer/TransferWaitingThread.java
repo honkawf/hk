@@ -11,8 +11,7 @@ import cn.edu.seu.datatransportation.BluetoothReadThread;
 import cn.edu.seu.datatransportation.BluetoothServerThread;
 import cn.edu.seu.datatransportation.BluetoothWriteThread;
 import cn.edu.seu.main.MainActivity;
-
-import com.XML.XML;
+import cn.edu.seu.xml.XML;
 
 public class TransferWaitingThread extends Thread{
 
@@ -35,7 +34,6 @@ public class TransferWaitingThread extends Thread{
     		{
 				
     			TransferActivity.bdt.createServer();
-    			
     			XML info=new XML();
                 byte[] receive=TransferActivity.bdt.read();
              	String xml=info.productSentenceXML("转账成功");
@@ -51,6 +49,7 @@ public class TransferWaitingThread extends Thread{
     			Message msg=handler.obtainMessage();
     			msg.what=0;
     			msg.sendToTarget();
+    			TransferActivity.bdt.close();
     		}
          }
              

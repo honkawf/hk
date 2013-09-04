@@ -1,4 +1,4 @@
-package com.XML;
+package cn.edu.seu.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -18,6 +18,42 @@ public class XML {
     private Trade trade;
     private PersonInfo person;
     private Transfer transfer;
+    public PersonInfo parsePersonXML(InputStream is){
+		PersonInfo person = new PersonInfo();
+		XmlPullParser xpp = Xml.newPullParser();
+		try {
+			xpp.setInput(is, "utf-8");
+			for (int i = xpp.getEventType(); i != XmlPullParser.END_DOCUMENT; i = xpp.next())
+			{
+			    switch (i) {  
+	            case XmlPullParser.START_TAG:  
+	                if (xpp.getName().equals("userName"))
+	                	person.setUsername(xpp.nextText());
+	                else if (xpp.getName().equals("customerName")) 
+	                	person.setCustomername(xpp.nextText());
+	                else if (xpp.getName().equals("cardNum")) 
+	                	person.setCardnum(xpp.nextText());
+	                else if(xpp.getName().equals("bluetoothMac"))
+	                	person.setBluetoothmac(xpp.nextText());
+	                else if(xpp.getName().equals("dynamicPasswordNum"))
+	                	person.setPrivatekey(xpp.nextText());
+	                else if(xpp.getName().equals("identificationCardNum"))
+	                	person.setIdentificationcardnum(xpp.nextText());
+	                else if(xpp.getName().equals("phoneNum"))
+	                	person.setPhonenum(xpp.nextText());
+	                break;
+	            }
+			}
+		} catch (XmlPullParserException e) {
+			// TODO Auto-generated catch block
+				Log.e("错误","未成功接收xml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+        return person;
+    }
+	
     public String parseBalanceXML(InputStream is)
     {
     	String sentence="";
@@ -31,7 +67,7 @@ public class XML {
 			    	if(xpp.getName().equals("information"))
 	            	{
 
-	            		if(!xpp.getAttributeValue(null,"event").equals("strangeBalance"))
+	            		if(!xpp.getAttributeValue(null,"event").equals("strangebalance"))
 	            			return sentence;
 	            		else
 	            		{	
@@ -79,6 +115,58 @@ public class XML {
 		} 
         return goods;
     }
+	public Trade parseIndividualTradeXML(InputStream is)
+	{
+		Trade trade=new Trade();
+        XmlPullParser xpp = Xml.newPullParser(); 
+        try {
+			xpp.setInput(is, "utf-8");
+			for (int i = xpp.getEventType(); i != XmlPullParser.END_DOCUMENT; i = xpp.next())
+			{        	
+			    if (i==XmlPullParser.START_TAG)
+			    {
+			    	if(xpp.getName().equals("information"))
+			    	{
+
+	            		if(!xpp.getAttributeValue(null,"event").equals("individualTrade"))
+	            			return null;
+	            		else
+	            			continue;
+
+	            	}
+			    	if (xpp.getName().equals("payername"))
+	                	trade.setPayerName(xpp.nextText());
+			    	else if (xpp.getName().equals("payerdevice"))
+	                	trade.setPayerDevice(xpp.nextText());
+			    	else if (xpp.getName().equals("payerimei"))
+	                	trade.setPayerIMEI(xpp.nextText());
+			    	else if (xpp.getName().equals("payercardnumber")) 
+	                	trade.setPayerCardNumber(xpp.nextText());
+	                else if (xpp.getName().equals("receivername")) 
+	                	trade.setReceiverName(xpp.nextText());
+	                else if (xpp.getName().equals("receiverdevice")) 
+	                	trade.setReceiverDevice(xpp.nextText());
+	                else if (xpp.getName().equals("receiverimei")) 
+	                	trade.setReceiverIMEI(xpp.nextText());
+	                else if (xpp.getName().equals("receivercardnumber")) 
+	                	trade.setReceiverCardNumber(xpp.nextText());
+	                else if(xpp.getName().equals("tradetime"))
+	                	trade.setTradeTime(xpp.nextText());
+	                else if(xpp.getName().equals("totalprice"))
+	                	trade.setTotalPrice(xpp.nextText());
+	                else if(xpp.getName().equals("cipher"))
+	                	trade.setCipher(xpp.nextText());
+	                
+			    }
+			}
+
+		} catch (XmlPullParserException e) {
+				Log.e("错误","未成功接收xml");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        return trade;
+	}
     public String parseTotalPriceXML(InputStream is)
     {
     	String totalprice="";
@@ -251,10 +339,7 @@ public class XML {
 	        return stringWriter.toString();  
 	  
 	    }  
-	    public void addData(String barcode,String name, String price,String quantity){  
-	        Goods newGoods =new Goods(barcode, name,price,quantity);
-	        goodslist.add(newGoods); 
-	    }  
+	    
 	    public String produceIndividualTradeXML(String event)
 	    {
 	    	 StringWriter stringWriter = new StringWriter();  
@@ -487,47 +572,19 @@ public class XML {
 	        return stringWriter.toString();  
 	  
 	    }
+	    public void addData(String barcode,String name, String price,String quantity){  
+	        Goods newGoods =new Goods(barcode, name,price,quantity);
+	        goodslist.add(newGoods); 
+	    } 
 	    public void setTrade(String payerdevice,String payername,String payerimei, String payercardnumber,String receiverdevice,String receivername,
 				String receiverimei,String receivercardnumber,String tradetime,String totalprice,String cipher){ 
 	    	trade=new Trade( payerdevice, payername, payerimei,  payercardnumber, receiverdevice, receivername,
 	    			 receiverimei, receivercardnumber, tradetime, totalprice, cipher);
-	    }  
-	    public PersonInfo parsePersonXML(InputStream is){
-			PersonInfo person = new PersonInfo();
-			XmlPullParser xpp = Xml.newPullParser();
-			try {
-				xpp.setInput(is, "utf-8");
-				for (int i = xpp.getEventType(); i != XmlPullParser.END_DOCUMENT; i = xpp.next())
-				{
-				    switch (i) {  
-		            case XmlPullParser.START_TAG:  
-		                if (xpp.getName().equals("userName"))
-		                	person.setUsername(xpp.nextText());
-		                else if (xpp.getName().equals("customerName")) 
-		                	person.setCustomername(xpp.nextText());
-		                else if (xpp.getName().equals("cardNum")) 
-		                	person.setCardnum(xpp.nextText());
-		                else if(xpp.getName().equals("bluetoothMac"))
-		                	person.setBluetoothmac(xpp.nextText());
-		                else if(xpp.getName().equals("dynamicPasswordNum"))
-		                	person.setPrivatekey(xpp.nextText());
-		                else if(xpp.getName().equals("identificationCardNum"))
-		                	person.setIdentificationcardnum(xpp.nextText());
-		                else if(xpp.getName().equals("phoneNum"))
-		                	person.setPhonenum(xpp.nextText());
-		                break;
-		            }
-				}
-			} catch (XmlPullParserException e) {
-				// TODO Auto-generated catch block
-					Log.e("错误","未成功接收xml");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-	        return person;
+	    } 
+	    public void setTrade(Trade trade){ 
+	    	this.trade=trade;
 	    }
-		
+	  
 		public String producePersonXML(String event){  
 	        StringWriter stringWriter = new StringWriter(); 
 	        try {  

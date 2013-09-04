@@ -9,10 +9,8 @@ import cn.edu.seu.datadeal.DataDeal;
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.main.MainActivity;
 import cn.edu.seu.transfer.Transfer;
-
-import com.XML.XML;
+import cn.edu.seu.xml.XML;
 import cn.edu.seu.main.R;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;

@@ -106,7 +106,7 @@ public final class R {
         public static final int confirm2=0x7f070022;
         public static final int confirm3=0x7f070016;
         public static final int confirm4=0x7f07001b;
-        public static final int confirmprice=0x7f070019;
+        public static final int confirmprice=0x7f07001a;
         public static final int count=0x7f070014;
         public static final int decode=0x7f070001;
         public static final int decode_failed=0x7f070002;
@@ -128,12 +128,13 @@ public final class R {
         public static final int picker=0x7f07001f;
         public static final int plus=0x7f070037;
         public static final int preview_view=0x7f07000c;
-        public static final int price=0x7f07001a;
+        public static final int price=0x7f070019;
         public static final int price1=0x7f070012;
         public static final int progressBar=0x7f07003a;
         public static final int quantity=0x7f070038;
         public static final int quit=0x7f070007;
         public static final int receiverInfo=0x7f07003c;
+        public static final int receivername=0x7f07001c;
         public static final int restart_preview=0x7f070008;
         public static final int return_scan_result=0x7f070009;
         public static final int search_book_contents_failed=0x7f07000a;
@@ -144,7 +145,6 @@ public final class R {
         public static final int t3=0x7f070027;
         public static final int t4=0x7f070024;
         public static final int textView1=0x7f070044;
-        public static final int textView2=0x7f07001c;
         public static final int time=0x7f07002e;
         public static final int total=0x7f070018;
         public static final int totalprice=0x7f070017;
@@ -200,6 +200,7 @@ public final class R {
         public static final int goon=0x7f080009;
         public static final int pay=0x7f08000e;
         public static final int price=0x7f080015;
+        public static final int receiver=0x7f080017;
         public static final int receiverInfo=0x7f080012;
         public static final int storeInfo=0x7f08000b;
         public static final int total=0x7f08000d;

@@ -12,9 +12,8 @@ import java.util.UUID;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.datatransportation.ClsUtils;
-
-import com.XML.XML;
 import cn.edu.seu.main.R;
+import cn.edu.seu.xml.XML;
 
 import com.zxing.activity.CaptureActivity;
 

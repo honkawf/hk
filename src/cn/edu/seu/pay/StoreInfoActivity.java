@@ -6,9 +6,9 @@ import java.util.Date;
 import cn.edu.seu.datatransportation.BluetoothClientThread;
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.main.MainActivity;
-
-import com.XML.XML;
 import cn.edu.seu.main.R;
+import cn.edu.seu.xml.XML;
+
 import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;
@@ -54,7 +54,7 @@ public class StoreInfoActivity extends Activity{
             case 3:
             	pd.dismiss();
             	Intent intent = new Intent(StoreInfoActivity.this,ConfirmPriceActivity.class);
-            	intent.putExtra("price", (String)msg.obj);
+            	intent.putExtra("receive", (byte[])msg.obj);
     			startActivity(intent);   
        		 	StoreInfoActivity.this.finish();
             }
@@ -169,13 +169,12 @@ public class StoreInfoActivity extends Activity{
                 			 MainActivity.bdt.createSocket();
                 			 MainActivity.bdt.write(xml);
                 			 byte[] receive=MainActivity.bdt.read();
-                			 String price=info.parseSentenceXML(new ByteArrayInputStream(receive));
                 			 Log.d("point","4");
                 			 loaded=true;
                 			 Message msg=handler.obtainMessage();
                      		 msg=handler.obtainMessage();
                      		 msg.what=3;
-                     		 msg.obj=new String(price);
+                     		 msg.obj=receive;
                      		 msg.sendToTarget();
         				}
         			}.start();

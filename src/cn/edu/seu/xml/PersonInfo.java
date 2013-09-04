@@ -1,4 +1,4 @@
-package com.XML;
+package cn.edu.seu.xml;
 
 /**
  * PersonInfo entity. @author MyEclipse Persistence Tools

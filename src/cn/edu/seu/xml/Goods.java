@@ -1,4 +1,4 @@
-package com.XML;
+package cn.edu.seu.xml;
 
 public class Goods{  
 	String name;  

@@ -1,9 +1,8 @@
 package cn.edu.seu.transfer;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
-
-import com.XML.XML;
 import cn.edu.seu.main.R;
+import cn.edu.seu.xml.XML;
 
 import com.zxing.activity.CaptureActivity;
 

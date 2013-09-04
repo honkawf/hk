@@ -22,9 +22,9 @@ import cn.edu.seu.pay.StoreInfoActivity;
 import cn.edu.seu.transfer.Transfer;
 import cn.edu.seu.transfer.TransferActivity;
 import cn.edu.seu.transfer.TransferWaitingThread;
+import cn.edu.seu.xml.PersonInfo;
+import cn.edu.seu.xml.XML;
 
-import com.XML.PersonInfo;
-import com.XML.XML;
 import com.zxing.activity.CaptureActivity;
 
 import android.app.Activity;
@@ -135,14 +135,6 @@ public class MainActivity extends Activity {
      } 
   
   
-     @Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		 TransferWaitingThread twt=new TransferWaitingThread(handler);
-         twt.start();
-	}
-
 
 	@Override 
      protected void onDestroy() { 

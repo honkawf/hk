@@ -21,8 +21,9 @@
     <string name="transfer">我要转账</string> 
     <string name="receiverInfo">收款方信息</string>
     <string name="checklist">我的支票</string>
-    <string name="confirmprice">请确认价格</string>
+    <string name="confirmprice">请确认价格和收款方</string>
     <string name="price">元</string>
     <string name="confirm4">确认付款</string>
+    <string name="receiver">收款方</string>
     
 </resources>
