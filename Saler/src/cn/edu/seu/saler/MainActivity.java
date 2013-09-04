@@ -1,4 +1,4 @@
-package com.salertest;
+package cn.edu.seu.saler;
 
 
 import java.io.IOException;
@@ -13,10 +13,16 @@ import java.util.UUID;
 
 
 
-import com.bluetooth.BluetoothOperation;
-import com.bluetooth.ClsUtils;
 
+
+
+
+import com.salertest.R;
+
+import cn.edu.seu.datatransportation.BluetoothDataTransportation;
+import cn.edu.seu.xml.PersonInfo;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -48,13 +54,35 @@ public class MainActivity extends Activity {
 	BluetoothAdapter btAdapt; 
 	public static BluetoothSocket btSocket;
 	public static final String PROTOCOL_SCHEME_RFCOMM = "btspp";
-	private BluetoothServerSocket mserverSocket;
-	private BluetoothSocket socket;
-	TextView receive;
+	public static  BluetoothDataTransportation bdt=new BluetoothDataTransportation();
+	private TextView receive;
+	public static PersonInfo person=new PersonInfo();
+	private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+            case 1:
+            	Intent intent=new Intent(MainActivity.this,InputActivity.class);
+            	startActivity(intent);
+                break;
+            case 0:
+                break;
+				 
+            }
+            super.handleMessage(msg);
+        }
+    };
      @Override 
      public void onCreate(Bundle savedInstanceState) { 
          super.onCreate(savedInstanceState); 
          setContentView(R.layout.main); 
+         //初始化person信息
+         {
+        	 person.setUsername("Chris");
+        	 person.setBluetoothmac(BluetoothDataTransportation.getLocalMac().replace(":", ""));
+        	 person.setCardnum("1234567890123456789");
+        	 person.setImei("213213");
+         }
          btnExit = (Button) this.findViewById(R.id.btnExit); 
          btnExit.setOnClickListener(new ClickEvent()); 
          btnDis = (Button) this.findViewById(R.id.btnDis); 
@@ -67,12 +95,19 @@ public class MainActivity extends Activity {
          // ToogleButton设置 
          tbtnSwitch = (ToggleButton) this.findViewById(R.id.tbtnSwitch); 
          tbtnSwitch.setOnClickListener(new ClickEvent()); 
-         BluetoothOperation.receive();
-         while(BluetoothOperation.receive==null);
+        WaitingPayThread wpt=new WaitingPayThread(handler);
+        wpt.start();
          
   
      } 
-     class ClickEvent implements View.OnClickListener { 
+     @Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		WaitingPayThread wpt=new WaitingPayThread(handler);
+	    wpt.start();
+	}
+	class ClickEvent implements View.OnClickListener { 
          @Override 
          public void onClick(View v) { 
              if (v == btnSearch)// 搜索蓝牙设备，在BroadcastReceiver显示结果 
@@ -128,13 +163,6 @@ public class MainActivity extends Activity {
             	{
             		 sendDialog.setText("");
             	}
-             }
-             else if(v==btnOpen)
-             {
-            	 //启动服务器
-            	 BluetoothOperation bo=new BluetoothOperation();
-            	 BluetoothOperation.ServerThread st= bo.new ServerThread();
-                 st.start();
              }
          } 
      } 
