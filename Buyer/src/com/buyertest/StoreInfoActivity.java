@@ -25,7 +25,6 @@ public class StoreInfoActivity extends Activity{
 	private TextView storeInfo;
 	private Button btnConfirm;
 	private ProgressDialog pd;
-	private BluetoothDataTransportation bdt;
 	private String storeName,mac,type;
 	private Handler handler = new Handler() {
         @Override
@@ -87,6 +86,7 @@ public class StoreInfoActivity extends Activity{
         		 // TODO Auto-generated method stub
         		 if(type.equals("supermarket"))
         		 {
+        			 Log.i("蓝牙地址",mac);
         			 new Thread()
         			 {
         				 public void run()
@@ -97,7 +97,7 @@ public class StoreInfoActivity extends Activity{
                         	 msg.sendToTarget();
                         	 Date dstart=new Date();
                         	 long start=dstart.getTime()/1000;
-                        	 while(!bdt.isConnected())
+                        	 while(!MainActivity.bdt.isConnected())
                         	 {
                         		 Date dend=new Date();
                         		 long end=dend.getTime()/1000;
@@ -131,7 +131,7 @@ public class StoreInfoActivity extends Activity{
                         	 msg.sendToTarget();
                         	 Date dstart=new Date();
                         	 long start=dstart.getTime()/1000;
-                        	 while(!bdt.isConnected())
+                        	 while(!MainActivity.bdt.isConnected())
                         	 {
                         		 Date dend=new Date();
                         		 long end=dend.getTime()/1000;

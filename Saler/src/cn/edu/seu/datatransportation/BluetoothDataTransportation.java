@@ -32,8 +32,12 @@ public class BluetoothDataTransportation implements IDataTransportation{
 	}
 	public void createServer()
 	{
+		Log.i("提示","已经打开服务器");
 		BluetoothServerThread bst=new BluetoothServerThread();
 		bst.start();
+		socket=bst.getSocket();
+		isConnected=true;
+		Log.i("提示","已经建立连接");
 	}
     public void connect(String address)
     {
@@ -97,6 +101,7 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		// TODO Auto-generated method stub
 		try {
 			socket.close();
+			isConnected=false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

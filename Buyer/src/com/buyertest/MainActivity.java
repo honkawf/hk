@@ -146,7 +146,6 @@ public class MainActivity extends Activity {
  			scanResult = bundle.getString("result");
  			mac=scanResult.split(";")[1];
  			try {
- 				BluetoothDataTransportation bdt=new BluetoothDataTransportation();
  				bdt.connect(mac);
  				Toast.makeText(MainActivity.this, scanResult, Toast.LENGTH_LONG).show();
  				Intent store=new Intent(MainActivity.this,StoreInfoActivity.class);

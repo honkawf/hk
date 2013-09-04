@@ -52,7 +52,6 @@ public class GoodsListActivity extends Activity{
     private String scanResult;
 	private ArrayList<String> barcodeset=new ArrayList<String>();
 	private Handler handler = new Handler() {
-		//此处有bug，在界面结束后还有可能dismiss()
         @Override
         public void handleMessage(Message msg) {
          try{
@@ -90,6 +89,9 @@ public class GoodsListActivity extends Activity{
             case 5:
             	pd.dismiss();
             	Toast.makeText(GoodsListActivity.this, "连接超时，请重试", 5000).show();
+            	break;
+            case 6:
+            	Toast.makeText(GoodsListActivity.this, "条形码不存在", 5000).show();
             	break;
             }
 
@@ -265,8 +267,10 @@ public class GoodsListActivity extends Activity{
  		 						if(sentence.equals("条形码不存在"))
  		 						{
  		 							Log.i("info","条形码不存在");
- 		 							//Toast.makeText(GoodsListActivity.this, "条形码不存在", 500).show();
- 		 							
+ 		 							Message msg=handler.obtainMessage();
+		 	 						msg.what=6;
+		 	 						msg.sendToTarget();
+		 	 	 				    barcodeset.add(goods.getBarcode());
  		 							
  		 						}
  		 						else{
