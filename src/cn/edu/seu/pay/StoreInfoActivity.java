@@ -3,17 +3,18 @@ package cn.edu.seu.pay;
 import java.io.ByteArrayInputStream;
 import java.util.Date;
 
-import cn.edu.seu.datatransportation.BluetoothClientThread;
-import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.main.MainActivity;
 import cn.edu.seu.main.R;
 import cn.edu.seu.xml.XML;
 
 import com.zxing.activity.CaptureActivity;
-
+import cn.edu.seu.pay.TimeOutProgressDialog.OnTimeOutListener;
 import android.app.Activity;
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,29 +28,74 @@ import android.widget.Toast;
 public class StoreInfoActivity extends Activity{
 	private TextView storeInfo;
 	private Button btnConfirm;
-	private ProgressDialog pd;
+	private TimeOutProgressDialog pd;
 	private String storeName,mac,type;
 	private boolean loaded=false;
+	private Thread sendThread;
+	private static final String TAG="StoreInfoActivity";
 	private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-            case 1:
-            	pd=new ProgressDialog(StoreInfoActivity.this);
-				pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-				pd.setCancelable(false);
-				pd.setMessage((String)msg.obj); 
-				pd.show();
-                break;
             case 0:
             	pd.dismiss();
        		 	Intent goodslist = new Intent(StoreInfoActivity.this,GoodsListActivity.class);
     			startActivity(goodslist);   
        		 	StoreInfoActivity.this.finish();
                 break;
+            case 1:
+            	pd=TimeOutProgressDialog.createProgressDialog(StoreInfoActivity.this,50000,new OnTimeOutListener(){
+
+					@Override
+					public void onTimeOut(TimeOutProgressDialog dialog) {
+						// TODO Auto-generated method stub
+						try{
+							sendThread.interrupt();
+						}
+						catch(Exception e)
+						{
+							Log.i(TAG, "线程打断失败");
+						}
+						AlertDialog.Builder builder = new Builder(StoreInfoActivity.this);
+				    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								// TODO Auto-generated method stub
+								Intent intent=new Intent(StoreInfoActivity.this,MainActivity.class);
+								startActivity(intent);
+								StoreInfoActivity.this.finish();
+								MainActivity.bdt.close();
+								
+							}
+				    		
+				    	});
+				    	builder.show();
+					}
+            		
+            	});
+				pd.setProgressStyle(TimeOutProgressDialog.STYLE_SPINNER);
+				pd.setCancelable(false);
+				pd.setMessage((String)msg.obj); 
+				pd.show();
+                break;
             case 2:
             	pd.dismiss();
-            	Toast.makeText(StoreInfoActivity.this, "连接超时，请重试", 5000).show();
+            	AlertDialog.Builder builder = new Builder(StoreInfoActivity.this);
+		    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						// TODO Auto-generated method stub
+						Intent intent=new Intent(StoreInfoActivity.this,MainActivity.class);
+						startActivity(intent);
+						StoreInfoActivity.this.finish();
+						MainActivity.bdt.close();
+						
+					}
+		    		
+		    	});
+		    	builder.show();
             	break;
             case 3:
             	pd.dismiss();
@@ -91,95 +137,85 @@ public class StoreInfoActivity extends Activity{
         		 if(type.equals("supermarket"))
         		 {
         			 Log.i("蓝牙地址",mac);
-        			 new Thread()
-        			 {
-        				 public void run()
-        				 {
-        					 Message msg=handler.obtainMessage();
-                        	 msg.what=1;
-                        	 msg.obj="正在连接服务器";
-                        	 msg.sendToTarget();
-                        	 Date dstart=new Date();
-                        	 long start=dstart.getTime()/1000;
-                        	 while(!MainActivity.bdt.isConnected())
-                        	 {
-                        		 Date dend=new Date();
-                        		 long end=dend.getTime()/1000;
-                        		 if(end-start>=20)
-                        		 {
-                        			 msg=handler.obtainMessage();
-                             		 msg.what=2;
-                             		 msg.sendToTarget();
-                             		 return;
-                        		 }
-                        	 }
-                        	 Log.d("point","4");
-                     		 msg=handler.obtainMessage();
-                     		 msg.what=0;
-                     		 msg.sendToTarget();
-        				 }
-        			 }.start();
-             		new Thread()
+        			 Message msg=handler.obtainMessage();
+        			 msg.what=1;
+        			 msg.obj="正在连接服务器";
+                     msg.sendToTarget();
+             		Thread sendThread=new Thread()
              		{
              			public void run()
              			{
-             				 MainActivity.bdt.createSocket();
-                			 Log.i("确认信息","顾客已确认");
-             			}
-             		}.start();
 
+             				Message msg=handler.obtainMessage();
+                    		msg=handler.obtainMessage();
+             				try
+             				{
+             					MainActivity.bdt.createSocket();
+	             				Log.i("确认信息","顾客已确认");
+	                   			 if( MainActivity.bdt.isConnected())
+	                   			 {
+	                            		 msg.what=0;
+	                            		 msg.sendToTarget();
+	                   			 }
+	                   			 else
+	                   			 {
+	                            		 msg.what=2;
+	                            		 msg.sendToTarget();
+	                   			 }
+                   				 
+             				}
+             				catch(Exception e)
+             				{
+             					 msg.what=2;
+                         		 msg.sendToTarget();
+             				}
+             			}
+             		};
+             		sendThread.start();
                  }
                  else if(type.equals("individual"))
                  {
-                	 new Thread()
-        			 {
-        				 public void run()
-        				 {
-        					 Log.i("point","1");
-        					 Message msg=handler.obtainMessage();
-                        	 msg.what=1;
-                        	 msg.obj="正在连接服务器";
-                        	 msg.sendToTarget();
-                        	 Date dstart=new Date();
-                        	 long start=dstart.getTime()/1000;
-                        	 while(!loaded)
-                        	 {
-                        		 Date dend=new Date();
-                        		 long end=dend.getTime()/1000;
-                        		 if(end-start>=20)
-                        		 {
-                        			 msg=handler.obtainMessage();
-                             		 msg.what=2;
-                             		 msg.obj=storeName;
-                             		 msg.sendToTarget();
-                             		 return;
-                        		 }
-                        	 }
-                        	 loaded=false;
-                        	
-        				 }
-        			 }.start();
-        			new Thread()
+                	 Message msg=handler.obtainMessage();
+                     msg.what=1;
+                     msg.obj="正在连接服务器";
+                     msg.sendToTarget();
+        		 	Thread sendThread=new Thread()
         			{
         				public void run()
         				{
-        					 Log.i("确认信息","顾客已确认");
-                			 XML info=new XML();
-                			 String xml=info.productSentenceXML("我要付款");
-                			 MainActivity.bdt.createSocket();
-                			 MainActivity.bdt.write(xml);
-                			 byte[] receive=MainActivity.bdt.read();
-                			 Log.d("point","4");
-                			 loaded=true;
-                			 Message msg=handler.obtainMessage();
-                     		 msg=handler.obtainMessage();
-                     		 msg.what=3;
-                     		 msg.obj=receive;
-                     		 msg.sendToTarget();
+        					Message msg=handler.obtainMessage();
+                    		msg=handler.obtainMessage();
+        					Log.i("确认信息","顾客已确认");
+                			XML info=new XML();
+                			String xml=info.productSentenceXML("我要付款");
+							try 
+							{
+								 MainActivity.bdt.createSocket();
+								 if(MainActivity.bdt.isConnected())
+		                			{
+		                				 MainActivity.bdt.write(xml);
+		                    			 byte[] receive=MainActivity.bdt.read();
+		                    			 if(receive!=null)
+		                    			 {
+		                             		 msg.what=3;
+		                             		 msg.obj=receive;
+		                             		 msg.sendToTarget();
+		                    			 }
+		                			}
+		                			else
+		                			{
+		                				msg.what=2;
+		                        		msg.sendToTarget();
+		                			}
+							} catch (Exception e) {
+								msg.what=2;
+                        		msg.sendToTarget();
+							}
+                			
+            		
         				}
-        			}.start();
-                 	
-                 	
+        			};
+        			sendThread.start();
                  }
 			}
          });

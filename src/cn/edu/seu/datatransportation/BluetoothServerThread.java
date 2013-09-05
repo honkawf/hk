@@ -18,7 +18,6 @@ public class BluetoothServerThread extends Thread{
 	}
 	public BluetoothSocket getSocket()
 	{
-		while(!isConnected);
 		return socket;
 	}
 	public void close()

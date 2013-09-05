@@ -13,6 +13,7 @@ import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.datatransportation.LocalInfoIO;
 import cn.edu.seu.main.MainActivity;
 import cn.edu.seu.main.R;
+import cn.edu.seu.pay.TimeOutProgressDialog.OnTimeOutListener;
 import cn.edu.seu.record.Record;
 import cn.edu.seu.record.Recorddh;
 import cn.edu.seu.xml.Goods;
@@ -56,19 +57,48 @@ public class ConfirmListActivity extends Activity{
 	private TextView totalView;
 	private ConfirmAdapter adapter;
 	private String totalprice;
-    private Goods goods=new Goods();
-    private ProgressDialog pd;
-    private int loaded=0;
+    private TimeOutProgressDialog pd;
 	private ArrayList<Map<String,Object>> goodslist;
+	private Thread sendAndReceiveThread;
+	private final static String TAG="ConfirmListActivity";
 	private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case 1:
-            	pd=new ProgressDialog(ConfirmListActivity.this);
-				pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+             	pd=TimeOutProgressDialog.createProgressDialog(ConfirmListActivity.this,50000,new OnTimeOutListener(){
+
+					@Override
+					public void onTimeOut(TimeOutProgressDialog dialog) {
+						// TODO Auto-generated method stub
+						try{
+							sendAndReceiveThread.interrupt();
+						}
+						catch(Exception e)
+						{
+							Log.i(TAG, "线程打断失败");
+						}
+						AlertDialog.Builder builder = new Builder(ConfirmListActivity.this);
+				    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								// TODO Auto-generated method stub
+								Intent intent=new Intent(ConfirmListActivity.this,MainActivity.class);
+								startActivity(intent);
+								ConfirmListActivity.this.finish();
+								MainActivity.bdt.close();
+								
+							}
+				    		
+				    	});
+				    	builder.show();
+					}
+            		
+            	});
+				pd.setProgressStyle(TimeOutProgressDialog.STYLE_SPINNER);
 				pd.setCancelable(false);
-				pd.setMessage((String)msg.obj);  
+				pd.setMessage((String)msg.obj); 
 				pd.show();
                 break;
             case 0:
@@ -91,11 +121,6 @@ public class ConfirmListActivity extends Activity{
 		    		
 		    	});
 		    	builder.show();
-            	break;
-            case 3:
-            	pd.dismiss();
-            	Toast.makeText(ConfirmListActivity.this, "连接超时，请重试", 5000).show();
-            	confirm.setVisibility(View.VISIBLE);
             	break;
             }
             super.handleMessage(msg);
@@ -124,32 +149,11 @@ public class ConfirmListActivity extends Activity{
 				//从本地文件获取随机码
 				//假设随机码是2309916916024662023
 				confirm.setVisibility(View.GONE);
-				new Thread()
-				{
-					public void run()
-					{
-						Message msg=handler.obtainMessage();
-						msg.what=1;
-						msg.obj="正在确认付款";
-						msg.sendToTarget();
-						Date dstart=new Date();
-                   	 	long start=dstart.getTime()/1000;
-                   	 	while(loaded==0)
-                   	 	{
-                   	 		Date dend=new Date();
-                   	 		long end=dend.getTime()/1000;
-                   	 		if(end-start>=20)
-                   	 		{
-                   	 			msg=handler.obtainMessage();
-                        		msg.what=3;
-                        		msg.sendToTarget();
-                        		return;
-                   	 		}
-                   	 	}
-                   	 	loaded=0;
-					}
-				}.start();
-				new Thread()
+				Message msg=handler.obtainMessage();
+				msg.what=1;
+				msg.obj="正在确认付款";
+				msg.sendToTarget();
+				sendAndReceiveThread=new Thread()
 				{
 					public void run()
 					{
@@ -184,7 +188,6 @@ public class ConfirmListActivity extends Activity{
 						if(MainActivity.bdt.write(xml))
 						{
 							byte[] receive=MainActivity.bdt.read();
-							loaded=1;
 							Message msg=handler.obtainMessage();
 							msg.what=0;
 							msg.sendToTarget();
@@ -209,7 +212,8 @@ public class ConfirmListActivity extends Activity{
 						else
 							return;
 					}
-				}.start();
+				};
+				sendAndReceiveThread.start();
 			}
         	
         });

@@ -24,9 +24,14 @@ public class BluetoothDataTransportation implements IDataTransportation{
 	private  BluetoothAdapter btAdapt=BluetoothAdapter.getDefaultAdapter();
 	public void createSocket()
 	{
-		Log.e("警告",address);
 		BluetoothClientThread bct=new BluetoothClientThread(address);
 		bct.start();
+		try {
+			bct.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		socket=bct.getSocket();
 		isConnected=true;
 	}
@@ -34,7 +39,17 @@ public class BluetoothDataTransportation implements IDataTransportation{
 	{
 		BluetoothServerThread bst=new BluetoothServerThread();
 		bst.start();
+		try {
+			bst.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		socket=bst.getSocket();
+	}
+	public boolean isAlive()
+	{
+		return socket!=null;
 	}
     public void connect(String address)
     {
@@ -78,12 +93,18 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		// TODO Auto-generated method stub
 		if(xml.equals(""))
 			return false;
-		while(socket==null)
+		if(socket==null)
 		{
 			createSocket();
 		}
 		BluetoothWriteThread bst=new BluetoothWriteThread(socket,xml);
 		bst.start();
+		try {
+			bst.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
 	@Override
@@ -91,6 +112,12 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		// TODO Auto-generated method stub
 		BluetoothReadThread brt=new BluetoothReadThread(socket);
 		brt.start();
+		try {
+			brt.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return brt.getReceive();
 	}
 	@Override

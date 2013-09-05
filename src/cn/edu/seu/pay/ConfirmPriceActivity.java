@@ -8,13 +8,13 @@ import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.datatransportation.LocalInfoIO;
 import cn.edu.seu.main.MainActivity;
 import cn.edu.seu.main.R;
+import cn.edu.seu.pay.TimeOutProgressDialog.OnTimeOutListener;
 import cn.edu.seu.record.Record;
 import cn.edu.seu.record.Recorddh;
 import cn.edu.seu.xml.Trade;
 import cn.edu.seu.xml.XML;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,24 +26,53 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ConfirmPriceActivity extends Activity{
 	private TextView price,receivername;
 	private Button confirm;
-    private ProgressDialog pd;
-    private boolean loaded=false;
+    private TimeOutProgressDialog pd;
     private byte[] receive;
     private Trade trade;
+    private Thread sendAndReceiveThread;
+    private final static String TAG="ConfirmPriceActivity";
 	private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case 1:
-            	pd=new ProgressDialog(ConfirmPriceActivity.this);
-				pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            	pd=TimeOutProgressDialog.createProgressDialog(ConfirmPriceActivity.this,50000,new OnTimeOutListener(){
+
+					@Override
+					public void onTimeOut(TimeOutProgressDialog dialog) {
+						// TODO Auto-generated method stub
+						try{
+							sendAndReceiveThread.interrupt();
+						}
+						catch(Exception e)
+						{
+							Log.i(TAG, "线程打断失败");
+						}
+						AlertDialog.Builder builder = new Builder(ConfirmPriceActivity.this);
+				    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								// TODO Auto-generated method stub
+								Intent intent=new Intent(ConfirmPriceActivity.this,MainActivity.class);
+								startActivity(intent);
+								ConfirmPriceActivity.this.finish();
+								MainActivity.bdt.close();
+								
+							}
+				    		
+				    	});
+				    	builder.show();
+					}
+            		
+            	});
+				pd.setProgressStyle(TimeOutProgressDialog.STYLE_SPINNER);
 				pd.setCancelable(false);
-				pd.setMessage((String)msg.obj);  
+				pd.setMessage((String)msg.obj); 
 				pd.show();
                 break;
             case 0:
@@ -58,7 +87,6 @@ public class ConfirmPriceActivity extends Activity{
 						// TODO Auto-generated method stub
 						Intent intent=new Intent(ConfirmPriceActivity.this,MainActivity.class);
 						startActivity(intent);
-						GoodsListActivity.flag=1;
 						ConfirmPriceActivity.this.finish();
 						MainActivity.bdt.close();
 						
@@ -66,11 +94,6 @@ public class ConfirmPriceActivity extends Activity{
 		    		
 		    	});
 		    	builder.show();
-            	break;
-            case 3:
-            	pd.dismiss();
-            	Toast.makeText(ConfirmPriceActivity.this, "连接超时，请重试", 5000).show();
-            	confirm.setVisibility(View.VISIBLE);
             	break;
             }
             super.handleMessage(msg);
@@ -125,32 +148,11 @@ public class ConfirmPriceActivity extends Activity{
 				confirmTrade.setTrade(trade);
 				String xml=confirmTrade.produceIndividualTradeXML("individualTrade");
 				MainActivity.bdt.write(xml);
-				new Thread()
-				{
-					public void run()
-					{
-						Message msg=handler.obtainMessage();
-						msg.what=1;
-						msg.obj="正在确认付款";
-						msg.sendToTarget();
-						Date dstart=new Date();
-                   	 	long start=dstart.getTime()/1000;
-                   	 	while(!loaded)
-                   	 	{
-                   	 		Date dend=new Date();
-                   	 		long end=dend.getTime()/1000;
-                   	 		if(end-start>=50)
-                   	 		{
-                   	 			msg=handler.obtainMessage();
-                        		msg.what=3;
-                        		msg.sendToTarget();
-                        		return;
-                   	 		}
-                   	 	}
-                   	 	loaded=false;
-					}
-				}.start();
-				new Thread()
+				Message msg=handler.obtainMessage();
+				msg.what=1;
+				msg.obj="正在确认付款";
+				msg.sendToTarget();
+				sendAndReceiveThread=new Thread()
 				{
 					public void run()
 					{
@@ -163,7 +165,7 @@ public class ConfirmPriceActivity extends Activity{
 		 					//给余额赋值
 							sentence=payResult.parseBalanceXML(new ByteArrayInputStream(receive));
 							String balance = sentence;
-							LocalInfoIO lio = new LocalInfoIO("sdcard/data" , "local.data");
+							LocalInfoIO lio = new LocalInfoIO("sdcard/data" , "local.dat");
 							lio.modifyBalance(balance);
 							//给交易记录赋值
 							Record record = new Record( 0 ,trade.getPayerName(),trade.getPayerDevice(),trade.getPayerIMEI(),trade.getReceiverName(),trade.getReceiverDevice(),trade.getReceiverIMEI(),Double.parseDouble(trade.getTotalPrice()),"收款", trade.getTradeTime());
@@ -182,7 +184,8 @@ public class ConfirmPriceActivity extends Activity{
 		            		msg.sendToTarget();
 						}
 					}
-				}.start();
+				};
+				sendAndReceiveThread.start();
 				
 			}
         	
