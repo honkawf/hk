@@ -28,11 +28,13 @@
         <activity android:name="cn.edu.seu.saler.InputActivity">
             
         </activity>
+       <service android:name="cn.edu.seu.saler.TestActivity"> 
+		</service>
         <receiver android:name="com.bluetooth.PairingRequest">
                   <intent-filter>
                     <action android:name="android.bluetooth.device.action.PAIRING_REQUEST" />
                   </intent-filter>
-                </receiver>
+         </receiver>
         
     </application>
 

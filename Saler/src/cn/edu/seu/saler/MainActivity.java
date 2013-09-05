@@ -61,13 +61,13 @@ public class MainActivity extends Activity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+            case 0:
+                break;
             case 1:
             	Intent intent=new Intent(MainActivity.this,InputActivity.class);
             	startActivity(intent);
                 break;
-            case 0:
-                break;
-				 
+       
             }
             super.handleMessage(msg);
         }

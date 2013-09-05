@@ -19,7 +19,6 @@ public class BluetoothServerThread extends Thread{
 	}
 	public BluetoothSocket getSocket()
 	{
-		while(!isConnected);
 		return socket;
 	}
 	public void close()
@@ -44,7 +43,6 @@ public class BluetoothServerThread extends Thread{
 			Log.d("server", "wait cilent connect...");
 			socket = mserverSocket.accept();
 			isConnected=true;
-			
 			Log.d("server", "accept success !");
 			//启动接受数据
 			} catch (IOException e) {

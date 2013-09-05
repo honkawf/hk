@@ -18,7 +18,6 @@ public class BluetoothClientThread extends Thread{
 	}
 	public BluetoothSocket getSocket()
 	{
-		while(!isConnected);
 		return socket;
 	}
 	public boolean isConnected()
@@ -39,13 +38,6 @@ public class BluetoothClientThread extends Thread{
 		catch (IOException e) 
 		{
 			Log.e("connect", "", e);
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			run();
 		} 
 	}
 }

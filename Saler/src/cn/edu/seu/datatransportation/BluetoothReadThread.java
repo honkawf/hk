@@ -20,7 +20,6 @@ public class BluetoothReadThread extends Thread{
 	}
 	public byte[] getReceive()
 	{
-		while(!isReceive());
 		return receive;
 	}
 	public void run() {

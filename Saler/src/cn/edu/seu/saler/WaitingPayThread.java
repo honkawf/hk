@@ -23,7 +23,6 @@ public class WaitingPayThread extends Thread{
 				 MainActivity.bdt.createServer();
 				 Message msg=handler.obtainMessage();
 				 msg.what=1;
-				 while(!MainActivity.bdt.isConnected());
 				 byte[]receive=MainActivity.bdt.read();
 				 XML info=new XML();
 				 String sentence=info.parseSentenceXML(new ByteArrayInputStream(receive));
@@ -31,6 +30,8 @@ public class WaitingPayThread extends Thread{
 					 msg.sendToTarget();
 				 else
 					 MainActivity.bdt.close();
+				 while(MainActivity.bdt.isAlive())
+					 yield();
 			 }
 			 catch(Exception e)
 			 {

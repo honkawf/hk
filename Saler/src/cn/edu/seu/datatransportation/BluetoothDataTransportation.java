@@ -35,6 +35,12 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		Log.i("提示","已经打开服务器");
 		BluetoothServerThread bst=new BluetoothServerThread();
 		bst.start();
+		try {
+			bst.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		socket=bst.getSocket();
 		isConnected=true;
 		Log.i("提示","已经建立连接");
@@ -60,7 +66,10 @@ public class BluetoothDataTransportation implements IDataTransportation{
                 Log.e("pair错误","配对出错");
         } 
     }
-       
+    public boolean isAlive()
+    {
+    	return socket!=null;
+    }
     public static String getLocalMac()
     {
     	BluetoothAdapter btAdapt=BluetoothAdapter.getDefaultAdapter();
@@ -84,10 +93,15 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		if(socket==null)
 		{
 			createSocket();
-			while(socket==null);
 		}
 		BluetoothWriteThread bst=new BluetoothWriteThread(socket,xml);
 		bst.start();
+		try {
+			bst.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return true;
 	}
 	@Override
@@ -95,6 +109,12 @@ public class BluetoothDataTransportation implements IDataTransportation{
 		// TODO Auto-generated method stub
 		BluetoothReadThread brt=new BluetoothReadThread(socket);
 		brt.start();
+		try {
+			brt.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return brt.getReceive();
 	}
 	@Override
