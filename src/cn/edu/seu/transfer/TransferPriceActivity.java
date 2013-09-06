@@ -7,8 +7,11 @@ import java.util.Date;
 
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.main.MainActivity;
+import cn.edu.seu.pay.ConfirmPriceActivity;
 import cn.edu.seu.pay.GoodsListActivity;
 import cn.edu.seu.pay.RSA;
+import cn.edu.seu.pay.TimeOutProgressDialog;
+import cn.edu.seu.pay.TimeOutProgressDialog.OnTimeOutListener;
 import cn.edu.seu.xml.PersonInfo;
 import cn.edu.seu.xml.XML;
 import cn.edu.seu.main.R;
@@ -19,7 +22,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,20 +41,44 @@ public class TransferPriceActivity extends Activity {
 	private TextView textView1;
 	private EditText editText1;
 	private Button btnConfirm;
-	private ProgressDialog pd;
+	private TimeOutProgressDialog pd;
 	private boolean loaded=false;
 	private PersonInfo receiver;
+	private Thread sendAndReceiveThread;
+	private final static String TAG="TransferPriceActivity";
 	private Handler handler = new Handler() {
 	@Override
 	public void handleMessage(Message msg) {
 		switch (msg.what) {
 	         case 1:
-	        	 pd=new ProgressDialog(TransferPriceActivity.this);
-	        	 pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-	        	 pd.setCancelable(false);
-	        	 pd.setMessage((String)msg.obj);  
-	        	 pd.show();
-	             break;
+	        	 pd=TimeOutProgressDialog.createProgressDialog(TransferPriceActivity.this,50000,new OnTimeOutListener(){
+
+						@Override
+						public void onTimeOut(TimeOutProgressDialog dialog) {
+							// TODO Auto-generated method stub
+							AlertDialog.Builder builder = new Builder(TransferPriceActivity.this);
+					    	builder.setTitle("连接信息").setMessage("连接失败").setCancelable(false).setPositiveButton("确认", new DialogInterface.OnClickListener(){
+
+								@Override
+								public void onClick(DialogInterface arg0, int arg1) {
+									// TODO Auto-generated method stub
+									Intent intent=new Intent(TransferPriceActivity.this,MainActivity.class);
+									startActivity(intent);
+									TransferPriceActivity.this.finish();
+									MainActivity.bdt.close();
+									
+								}
+					    		
+					    	});
+					    	builder.show();
+						}
+	            		
+	            	});
+					pd.setProgressStyle(TimeOutProgressDialog.STYLE_SPINNER);
+					pd.setCancelable(false);
+					pd.setMessage((String)msg.obj); 
+					pd.show();
+	                break;
 	         case 2:
 	        	 AlertDialog.Builder alertDialog = new Builder(TransferPriceActivity.this);
 	        	 alertDialog.setTitle("转账结果").setMessage((String)msg.obj).setCancelable(false);
@@ -74,7 +100,7 @@ public class TransferPriceActivity extends Activity {
 					break;
 	         case 3:
 	        	 pd.dismiss();
-				 Toast.makeText(TransferPriceActivity.this, "连接超时", 2000).show();
+				 Toast.makeText(TransferPriceActivity.this, "连接失败", 2000).show();
 	             break;
 	     }
 	     super.handleMessage(msg);
@@ -92,32 +118,11 @@ public class TransferPriceActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				new Thread()
-				{
-					public void run()
-					{
-						Message msg=handler.obtainMessage();
-						msg.what=1;
-						msg.obj="正在发送电子支票";
-						msg.sendToTarget();
-						Date d=new Date();
-						long start=d.getTime()/1000;
-						while(loaded==false)
-						{
-							long end=d.getTime()/1000;
-							if(end-start>120)
-							{
-								msg=handler.obtainMessage();
-								msg.what=3;
-								msg.sendToTarget();
-								return;
-							}
-						}
-						loaded=false;
-					}
-				}.start();
-				new Thread()
+				Message msg=handler.obtainMessage();
+				msg.what=1;
+				msg.obj="正在发送电子支票";
+				msg.sendToTarget();
+				sendAndReceiveThread=new Thread()
 				{
 					public void run()
 					{
@@ -145,7 +150,6 @@ public class TransferPriceActivity extends Activity {
 						TransferActivity.bdt.write(xml);
 						Log.d("发送",xml);
 						byte[] receive=TransferActivity.bdt.read();
-						loaded=true;
 						String sentence=transfer.parseSentenceXML(new ByteArrayInputStream(receive));
 						Message msg=handler.obtainMessage();
 						msg.what=2;
@@ -161,7 +165,8 @@ public class TransferPriceActivity extends Activity {
 						TransferActivity.bdt.close();
 								
 					}
-				}.start();
+				};
+				sendAndReceiveThread.start();
 			}
         	
         });

@@ -667,5 +667,9 @@ public class XML {
 	    {
 	    	this.transfer=transfer;
 	    }
+	    public Trade getTrade()
+	    {
+	    	return trade;
+	    }
 
 }

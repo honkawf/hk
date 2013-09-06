@@ -47,17 +47,13 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 public class TransferActivity extends Activity {
     /** Called when the activity is first created. */
-	private Button btnSend, btnClo, btnExit,btnSta,btnOpenServer,btnOpenClient,btnSearch; 
-	private ToggleButton tbtnSwitch; 
+	private Button btnSearch; 
 	private ListView lvBTDevices; 
 	private String mac,name;
 	private ArrayAdapter<String> adtDevices;
 	private List<String> lstDevices = new ArrayList<String>(); 
 	private BluetoothAdapter btAdapt; 
-	private ProgressDialog pd;
-	private BluetoothSocket socket;
-	private String []storeInfo=new String[2];
-	private TextView receive;
+	private final static String TAG="TransferActivity";
 	public static BluetoothDataTransportation bdt=new BluetoothDataTransportation();
      @Override 
      public void onCreate(Bundle savedInstanceState) { 
@@ -95,10 +91,12 @@ public class TransferActivity extends Activity {
                 name=values[0];
                	mac= values[1];
                 bdt.connect(mac);
+                Log.i(TAG, name);
                 Intent intent= new Intent(TransferActivity.this,ReceiverInfoActivity.class);
                 intent.putExtra("name",name);
                 intent.putExtra("mac",mac);
                 startActivity(intent);
+                Log.i(TAG, name);
                 TransferActivity.this.finish();
 			} 	
 		});

@@ -57,7 +57,7 @@ public class StoreInfoActivity extends Activity{
 							Log.i(TAG, "线程打断失败");
 						}
 						AlertDialog.Builder builder = new Builder(StoreInfoActivity.this);
-				    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+				    	builder.setTitle("连接信息").setMessage("连接失败").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
 
 							@Override
 							public void onClick(DialogInterface arg0, int arg1) {
@@ -82,7 +82,7 @@ public class StoreInfoActivity extends Activity{
             case 2:
             	pd.dismiss();
             	AlertDialog.Builder builder = new Builder(StoreInfoActivity.this);
-		    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+		    	builder.setTitle("连接信息").setMessage("连接失败").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
 
 					@Override
 					public void onClick(DialogInterface arg0, int arg1) {

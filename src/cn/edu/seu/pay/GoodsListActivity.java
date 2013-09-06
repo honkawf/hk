@@ -89,7 +89,7 @@ public class GoodsListActivity extends Activity{
        	     	break;
             case 5:
             	pd.dismiss();
-            	Toast.makeText(GoodsListActivity.this, "连接超时，请重试", 5000).show();
+            	Toast.makeText(GoodsListActivity.this, "连接失败，请重试", 5000).show();
             	break;
             case 6:
             	Toast.makeText(GoodsListActivity.this, "条形码不存在", 5000).show();

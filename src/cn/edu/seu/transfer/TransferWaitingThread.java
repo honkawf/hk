@@ -33,16 +33,17 @@ public class TransferWaitingThread extends Thread{
 			try
     		{
 				
-    			TransferActivity.bdt.createServer();
+    			MainActivity.bdt.createServer();
     			XML info=new XML();
                 byte[] receive=TransferActivity.bdt.read();
              	String xml=info.productSentenceXML("转账成功");
-             	TransferActivity.bdt.write(xml);
+             	MainActivity.bdt.write(xml);
              	Message msg=handler.obtainMessage();
              	msg.what=1;
              	msg.obj=receive;
              	msg.sendToTarget();
-             	while(TransferActivity.bdt.isAlive());
+             	while(MainActivity.bdt.isAlive())
+             		yield();
            
     		}
     		catch(Exception e)
@@ -50,7 +51,7 @@ public class TransferWaitingThread extends Thread{
     			Message msg=handler.obtainMessage();
     			msg.what=0;
     			msg.sendToTarget();
-    			TransferActivity.bdt.close();
+    			MainActivity.bdt.close();
     		}
          }
              

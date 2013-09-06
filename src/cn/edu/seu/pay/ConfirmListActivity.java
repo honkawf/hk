@@ -17,6 +17,7 @@ import cn.edu.seu.pay.TimeOutProgressDialog.OnTimeOutListener;
 import cn.edu.seu.record.Record;
 import cn.edu.seu.record.Recorddh;
 import cn.edu.seu.xml.Goods;
+import cn.edu.seu.xml.Trade;
 import cn.edu.seu.xml.XML;
 
 import com.zxing.activity.CaptureActivity;
@@ -61,6 +62,7 @@ public class ConfirmListActivity extends Activity{
 	private ArrayList<Map<String,Object>> goodslist;
 	private Thread sendAndReceiveThread;
 	private final static String TAG="ConfirmListActivity";
+	private Trade trade;
 	private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -71,15 +73,8 @@ public class ConfirmListActivity extends Activity{
 					@Override
 					public void onTimeOut(TimeOutProgressDialog dialog) {
 						// TODO Auto-generated method stub
-						try{
-							sendAndReceiveThread.interrupt();
-						}
-						catch(Exception e)
-						{
-							Log.i(TAG, "线程打断失败");
-						}
 						AlertDialog.Builder builder = new Builder(ConfirmListActivity.this);
-				    	builder.setTitle("连接信息").setMessage("连接超时").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+				    	builder.setTitle("连接信息").setMessage("连接失败").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
 
 							@Override
 							public void onClick(DialogInterface arg0, int arg1) {
@@ -122,6 +117,23 @@ public class ConfirmListActivity extends Activity{
 		    	});
 		    	builder.show();
             	break;
+            case 3:
+            	AlertDialog.Builder builder1 = new Builder(ConfirmListActivity.this);
+		    	builder1.setTitle("连接信息").setMessage("连接失败").setCancelable(false).setPositiveButton("确认", new OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+						// TODO Auto-generated method stub
+						Intent intent=new Intent(ConfirmListActivity.this,MainActivity.class);
+						startActivity(intent);
+						ConfirmListActivity.this.finish();
+						MainActivity.bdt.close();
+						
+					}
+		    		
+		    	});
+		    	builder1.show();
+		    	break;
             }
             super.handleMessage(msg);
         }
@@ -157,60 +169,79 @@ public class ConfirmListActivity extends Activity{
 				{
 					public void run()
 					{
-
-						Date dt=new Date();
-						String cardnumber=MainActivity.person.getCardnum();
-						String tradetime=String.valueOf(dt.getTime()/1000);
-						String buyerimei=MainActivity.person.getImei();
-						String username=MainActivity.person.getUsername();
-						String buyerdevice=BluetoothDataTransportation.getLocalMac().replaceAll(":","");
-						String salerdevice=MainActivity.bdt.getRemoteMac().replaceAll(":","");
-						int totalpricefill=(int)(Double.valueOf(totalprice)*100);
-						String pricefill=String.format("%08d",totalpricefill);
-						String buyerdevicesub=buyerdevice.substring(buyerdevice.length()-4,buyerdevice.length());
-						String salerdevicesub=salerdevice.substring(salerdevice.length()-4,salerdevice.length());
-						int buyerdevicefill=Integer.parseInt(buyerdevicesub,16);
-						String buyerfill=String.format("%05d",buyerdevicefill);
-						int salerdevicefill=Integer.parseInt(salerdevicesub,16);
-						String salerfill=String.format("%05d",salerdevicefill);
-						String words=tradetime+buyerfill+salerfill+pricefill;
-						Log.d("words",words);
-						RSA rsa=new RSA();
-						String cipher=rsa.setRSA(words);
-						XML confirmTrade=new XML();
-						for(Map<String, Object> map :goodslist)
+						try
 						{
-							confirmTrade.addData(map.get("barcode").toString(), map.get("name").toString(), map.get("price").toString(), map.get("quantity").toString());
+							Date dt=new Date();
+							String cardnumber=MainActivity.person.getCardnum();
+							String tradetime=String.valueOf(dt.getTime()/1000);
+							String buyerimei=MainActivity.person.getImei();
+							String username=MainActivity.person.getUsername();
+							String buyerdevice=BluetoothDataTransportation.getLocalMac().replaceAll(":","");
+							String salerdevice=MainActivity.bdt.getRemoteMac().replaceAll(":","");
+							int totalpricefill=(int)(Double.valueOf(totalprice)*100);
+							String pricefill=String.format("%08d",totalpricefill);
+							String buyerdevicesub=buyerdevice.substring(buyerdevice.length()-4,buyerdevice.length());
+							String salerdevicesub=salerdevice.substring(salerdevice.length()-4,salerdevice.length());
+							int buyerdevicefill=Integer.parseInt(buyerdevicesub,16);
+							String buyerfill=String.format("%05d",buyerdevicefill);
+							int salerdevicefill=Integer.parseInt(salerdevicesub,16);
+							String salerfill=String.format("%05d",salerdevicefill);
+							String words=tradetime+buyerfill+salerfill+pricefill;
+							Log.d("words",words);
+							RSA rsa=new RSA();
+							String cipher=rsa.setRSA(words);
+							XML confirmTrade=new XML();
+							for(Map<String, Object> map :goodslist)
+							{
+								confirmTrade.addData(map.get("barcode").toString(), map.get("name").toString(), map.get("price").toString(), map.get("quantity").toString());
+							}
+							confirmTrade.setTrade(buyerdevice, username, buyerimei, cardnumber, salerdevice, "receivername", "receiverimei", "receivercardnumber", tradetime, totalprice, cipher);
+							String xml=confirmTrade.produceTradeXML("confirmTrade");
+							Log.d("",xml);
+							if(MainActivity.bdt.write(xml))
+							{
+								byte[] receive=MainActivity.bdt.read();
+								Message msg=handler.obtainMessage();
+								msg.what=0;
+								msg.sendToTarget();
+						    	XML confirmXML=new XML();
+						    	String sentence=confirmXML.parseSentenceXML(new ByteArrayInputStream(receive));
+						    	if(sentence.equals(""))
+						    	{
+						    		sentence=confirmXML.parseBalanceXML(new ByteArrayInputStream(receive));
+						    		msg=handler.obtainMessage();
+							    	msg.what=2;
+							    	msg.obj="付款成功";
+							    	msg.sendToTarget();
+				 					Log.d("",new String(receive));
+				 					//更新余额,交易记录
+				 					//给余额赋值
+				 					String balance=sentence;
+				 					LocalInfoIO lio = new LocalInfoIO("sdcard/data" , "local.dat");
+									lio.modifyBalance(balance);
+									//给交易记录赋值
+									trade=confirmTrade.getTrade();
+									Record record = new Record( 0 ,trade.getPayerName(),trade.getPayerDevice(),trade.getPayerIMEI(),trade.getReceiverName(),trade.getReceiverDevice(),trade.getReceiverIMEI(),Double.parseDouble(trade.getTotalPrice()),"收款", trade.getTradeTime());
+									Recorddh rdh = new Recorddh(ConfirmListActivity.this , "recorddb" , null , 1);
+									rdh.insert(record);
+						    	}
+						    	else
+						    	{
+						    		msg=handler.obtainMessage();
+									msg.what=2;
+									msg.obj="付款失败";
+									msg.sendToTarget();
+						    	}
+							}
+							else
+								return;
 						}
-						confirmTrade.setTrade(buyerdevice, username, buyerimei, cardnumber, salerdevice, "receivername", "receiverimei", "receivercardnumber", tradetime, totalprice, cipher);
-						String xml=confirmTrade.produceTradeXML("confirmTrade");
-						Log.d("",xml);
-						if(MainActivity.bdt.write(xml))
+						catch(Exception e)
 						{
-							byte[] receive=MainActivity.bdt.read();
 							Message msg=handler.obtainMessage();
-							msg.what=0;
+							msg.what=3;
 							msg.sendToTarget();
-					    	XML confirmXML=new XML();
-					    	String sentence=confirmXML.parseSentenceXML(new ByteArrayInputStream(receive));
-					    	msg=handler.obtainMessage();
-					    	msg.what=2;
-					    	msg.obj=sentence;
-					    	msg.sendToTarget();
-		 					Log.d("",new String(receive));
-		 					//更新余额,交易记录
-		 					//给余额赋值
-							String balance = null,availableBalance = null;
-							LocalInfoIO lio = new LocalInfoIO("sdcard/data" , "local.data");
-							lio.modifyBalance(balance);
-							lio.modifyAvailableBalance(availableBalance);
-							//给交易记录赋值
-							Record record = new Record( 0 ,null,null,null,null,null,null,null,null, null);
-							Recorddh rdh = new Recorddh(ConfirmListActivity.this , "recorddb" , null , 1);
-							rdh.insert(record);
 						}
-						else
-							return;
 					}
 				};
 				sendAndReceiveThread.start();
