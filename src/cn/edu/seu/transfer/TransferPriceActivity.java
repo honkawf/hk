@@ -13,6 +13,7 @@ import cn.edu.seu.pay.RSA;
 import cn.edu.seu.pay.TimeOutProgressDialog;
 import cn.edu.seu.pay.TimeOutProgressDialog.OnTimeOutListener;
 import cn.edu.seu.xml.PersonInfo;
+import cn.edu.seu.xml.Trade;
 import cn.edu.seu.xml.XML;
 import cn.edu.seu.main.R;
 
@@ -36,7 +37,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import cn.edu.seu.xml.Transfer;
 public class TransferPriceActivity extends Activity {
 	private TextView textView1;
 	private EditText editText1;
@@ -46,6 +47,7 @@ public class TransferPriceActivity extends Activity {
 	private PersonInfo receiver;
 	private Thread sendAndReceiveThread;
 	private final static String TAG="TransferPriceActivity";
+	private Transfer transfer;
 	private Handler handler = new Handler() {
 	@Override
 	public void handleMessage(Message msg) {
@@ -127,12 +129,13 @@ public class TransferPriceActivity extends Activity {
 					public void run()
 					{
 
-						XML transfer=new XML();
+						XML info=new XML();
 						// 点击确认按钮后，获取用户输入金额，完成转账交易
 						String totalprice=editText1.getText().toString();
 						Date dt=new Date();
 						String cardnumber=MainActivity.person.getCardnum();
 						String username=MainActivity.person.getCustomername();
+						String imei=MainActivity.person.getImei();
 						String transfertime=String.valueOf(dt.getTime()/1000);
 						String payerdevice=BluetoothDataTransportation.getLocalMac().replaceAll(":","");
 						String receiverdevice=TransferActivity.bdt.getRemoteMac().replaceAll(":","");
@@ -142,15 +145,23 @@ public class TransferPriceActivity extends Activity {
 						int payerdevicefill=Integer.parseInt(payerdevicesub,16);
 						String payerfill=String.format("%05d",payerdevicefill);
 						String words=transfertime+payerfill+pricefill;
-						Log.d("words",words);
 						RSA rsa=new RSA();
 						String cipher=rsa.setRSA(words);
-						transfer.setTransfer(payerdevice, "", username, "", transfertime, totalprice, cipher, cardnumber, "");
-						String xml=transfer.produceTransferXML("transfer");
+						transfer=new Transfer();
+						transfer.setPayerName(username);
+						transfer.setPayerCardNumber(cardnumber);
+						transfer.setPayerIMEI(imei);
+						transfer.setPayerDevice(payerdevice);
+						transfer.setTotalPrice(totalprice);
+						transfer.setTradeTime(transfertime);
+						transfer.setCipher(words);
+						Log.d("words",words);
+						info.setTransfer(transfer);
+						String xml=info.produceTransferXML("transfer");
 						TransferActivity.bdt.write(xml);
 						Log.d("发送",xml);
 						byte[] receive=TransferActivity.bdt.read();
-						String sentence=transfer.parseSentenceXML(new ByteArrayInputStream(receive));
+						String sentence=info.parseSentenceXML(new ByteArrayInputStream(receive));
 						Message msg=handler.obtainMessage();
 						msg.what=2;
 						msg.obj="转账失败";

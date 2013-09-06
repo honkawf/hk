@@ -19,10 +19,10 @@ import cn.edu.seu.datatransportation.BluetoothServerThread;
 import cn.edu.seu.datatransportation.BluetoothWriteThread;
 import cn.edu.seu.datatransportation.ClsUtils;
 import cn.edu.seu.pay.StoreInfoActivity;
-import cn.edu.seu.transfer.Transfer;
 import cn.edu.seu.transfer.TransferActivity;
 import cn.edu.seu.transfer.TransferWaitingThread;
 import cn.edu.seu.xml.PersonInfo;
+import cn.edu.seu.xml.Transfer;
 import cn.edu.seu.xml.XML;
 
 import com.zxing.activity.CaptureActivity;

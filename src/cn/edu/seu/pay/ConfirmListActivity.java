@@ -175,6 +175,7 @@ public class ConfirmListActivity extends Activity{
 							String cardnumber=MainActivity.person.getCardnum();
 							String tradetime=String.valueOf(dt.getTime()/1000);
 							String buyerimei=MainActivity.person.getImei();
+							Log.i(TAG, buyerimei);
 							String username=MainActivity.person.getUsername();
 							String buyerdevice=BluetoothDataTransportation.getLocalMac().replaceAll(":","");
 							String salerdevice=MainActivity.bdt.getRemoteMac().replaceAll(":","");

@@ -1,18 +1,21 @@
-package cn.edu.seu.transfer;
+package cn.edu.seu.xml;
+
+import android.util.Log;
+
 
 public class Transfer {
 
-	private String payerdevice;
-	private String receiverdevice;
-	private String payername;
-	private String payerimei;
-	private String receivername;
-	private String receiverimei;
-	private String tradetime;
-	private String totalprice;
-	private String cipher;
-	private String payercardnumber;
-	private String receivercardnumber;
+	private String payerdevice="";
+	private String receiverdevice="";
+	private String payername="";
+	private String payerimei="";
+	private String receivername="";
+	private String receiverimei="";
+	private String tradetime="";
+	private String totalprice="";
+	private String cipher="";
+	private String payercardnumber="";
+	private String receivercardnumber="";
 	public Transfer()
 	{
 		
@@ -26,7 +29,7 @@ public class Transfer {
 		this.setPayerCardNumber(payercardnumber);
 		this.setReceiverDevice(receiverdevice);
 		this.setReceiverIMEI(receiverimei);
-		this.setReceiverCardNumber(receivercardnumber);
+		this.setReceiverName(receivername);
 		this.setReceiverCardNumber(receivercardnumber);
 		this.setTradeTime(tradetime);
 		this.setTotalPrice(totalprice);

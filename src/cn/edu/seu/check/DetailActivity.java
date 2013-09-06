@@ -8,7 +8,7 @@ import java.net.Socket;
 import cn.edu.seu.datadeal.DataDeal;
 import cn.edu.seu.datatransportation.BluetoothDataTransportation;
 import cn.edu.seu.main.MainActivity;
-import cn.edu.seu.transfer.Transfer;
+import cn.edu.seu.xml.Transfer;
 import cn.edu.seu.xml.XML;
 import cn.edu.seu.main.R;
 import android.app.Activity;

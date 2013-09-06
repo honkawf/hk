@@ -9,7 +9,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-import cn.edu.seu.transfer.Transfer;
 import android.util.Log;
 import android.util.Xml;
 
