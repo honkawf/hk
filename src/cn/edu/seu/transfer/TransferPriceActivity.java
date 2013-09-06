@@ -154,7 +154,7 @@ public class TransferPriceActivity extends Activity {
 						transfer.setPayerDevice(payerdevice);
 						transfer.setTotalPrice(totalprice);
 						transfer.setTradeTime(transfertime);
-						transfer.setCipher(words);
+						transfer.setCipher(cipher);
 						Log.d("words",words);
 						info.setTransfer(transfer);
 						String xml=info.produceTransferXML("transfer");
