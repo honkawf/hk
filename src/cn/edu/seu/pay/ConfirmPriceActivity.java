@@ -53,8 +53,15 @@ public class ConfirmPriceActivity extends Activity{
 								// TODO Auto-generated method stub
 								Intent intent=new Intent(ConfirmPriceActivity.this,MainActivity.class);
 								startActivity(intent);
-								ConfirmPriceActivity.this.finish();
-								MainActivity.bdt.close();
+								try
+								{
+									ConfirmPriceActivity.this.finish();
+									MainActivity.bdt.close();
+								}
+								catch(Exception e)
+								{
+									Log.i(TAG,"关闭失败");
+								}
 								
 							}
 				    		
