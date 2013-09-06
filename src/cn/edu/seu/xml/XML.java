@@ -246,6 +246,10 @@ public class XML {
     	                	transfer.setPayerDevice(xpp.nextText());
     	                else if (xpp.getName().equals("receiverdevice")) 
     	                	transfer.setReceiverDevice(xpp.nextText());
+    	                else if (xpp.getName().equals("payerimei")) 
+    	                	transfer.setPayerIMEI(xpp.nextText());
+    	                else if (xpp.getName().equals("receiverimei")) 
+    	                	transfer.setReceiverIMEI(xpp.nextText());
     	                else if (xpp.getName().equals("payername")) 
     	                	transfer.setPayerName(xpp.nextText());
     	                else if(xpp.getName().equals("receivername"))
